@@ -42,9 +42,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     val DEFAULT_ZOOM_LEVEL = 17f
 
     // 현재위치를 가져올수 없는 경우 서울 시청의 위치로 지도를 보여주기 위해 서울시청의 위치를 변수로 선언
-    // 일단 과천청사역 1번출구로 바꿔둠
     // LatLng 클래스는 위도와 경도를 가지는 클래스
-    val CITY_HALL = LatLng(37.4272309, 126.99090478)
+    val CITY_HALL = LatLng(37.50203121152806, 127.03054633381461)
 
     // 구글 맵 객체를 참조할 멤버 변수
     var googleMap: GoogleMap? = null
@@ -202,6 +201,24 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    fun getDistance(latitude: Double, longitude: Double): Int {
+        val currentLatLng = MapFragment().getMyLocation()
+
+        val locationA = Location("A")
+        val locationB = Location("B")
+
+        locationA.latitude = currentLatLng.latitude
+        locationA.longitude = currentLatLng.longitude
+        locationB.latitude = latitude
+        locationB.longitude = longitude
+
+        //에뮬레이터에서 현재 위치를 구할 수 없어 임의로 기본값 선택.
+        // 현재 위치 구할 수 있는 환경이라면, 위치 권한 거부했을 때의 기본값(현재 CITY_HALL)으로 바꿀 것 요망
+        return if (currentLatLng != LatLng(0.0, 0.0))
+            locationA.distanceTo(locationB).toInt()
+        else 0
+    }
+
     // 스레드가 다운로드 받아서 파싱한 결과를 가지고 맵 뷰에 마커를 출력해달라고 요청
     val handler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
@@ -209,29 +226,34 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             toiletRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
 
+                    fun distanceFilter(latitude: Double, longitude: Double) {
+
+                        val distance = getDistance(latitude, longitude)
+                        if (distance <= 2000) {
+                            map = toilet!!.toMap()
+                            addMarkers(map)
+                        }
+                    }
+
                     if (dataSnapshot.exists()) {
                         // looping through to values
                         for (i in dataSnapshot.children) {
                             toilet = i.getValue(Toilet::class.java)
-                            map = toilet!!.toMap()
-                            if(map["latitude"] != null && map["longtitude"] != null)
-                                addMarkers(map)
+
+                            if (toilet?.latitude != null && toilet?.longitude != null)
+                                distanceFilter(toilet?.latitude!!, toilet?.longitude!!)
                         }
                     }
-
                 }
-
                 override fun onCancelled(databaseError: DatabaseError) {}
             })
-
         }
     }
 
     // 마커를 추가하는 함수
     @SuppressLint("PotentialBehaviorOverride")
     fun addMarkers(toilet: MutableMap<String, Any?>) {
-        // 맵이 직접 마커를 생성 - 작은 지역에 마커가 많으면 보기가 안좋습니다.
-        // 마커 누르면 하단시트
+        // 맵이 직접 마커를 생성
         val marker: Marker? = googleMap?.addMarker(
             MarkerOptions()
                 .position(LatLng(toilet["latitude"] as Double, toilet["longitude"] as Double))
@@ -299,7 +321,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     var toiletThread: ToiletThread? = null
 
-    // 앱이 활성화될때 서울시 데이터를 읽어옴
+    // 앱이 활성화될때 화장실 데이터를 읽어옴
     override fun onStart() {
         super.onStart()
         if (toiletThread == null) {

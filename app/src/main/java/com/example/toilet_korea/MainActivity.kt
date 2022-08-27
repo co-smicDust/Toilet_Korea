@@ -2,9 +2,9 @@ package com.example.toilet_korea
 
 import android.annotation.SuppressLint
 import android.os.*
+import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -114,6 +114,22 @@ class MainActivity : AppCompatActivity() {
 
     // 툴바 메뉴 버튼이 클릭 됐을 때 실행하는 함수
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        //왼쪽 바 상단 닉네임 불러오기
+        val database: DatabaseReference = Firebase.database.reference
+        val currentUser = Firebase.auth.currentUser
+        val userRef = database.child("User").child(currentUser?.uid.toString()).child("userNm")
+
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            @SuppressLint("SetTextI18n")
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                findViewById<TextView>(R.id.text).text = dataSnapshot.value.toString() + "님"
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+
         val dLayout: DrawerLayout = findViewById(R.id.drawer_layout) // initiate a DrawerLayout
 
         //왼쪽 바 상단 닉네임 불러오기

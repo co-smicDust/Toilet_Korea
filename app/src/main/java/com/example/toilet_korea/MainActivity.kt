@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 
@@ -137,15 +138,18 @@ class MainActivity : AppCompatActivity() {
         val currentUser = Firebase.auth.currentUser
         val userRef = database.child("User").child(currentUser?.uid.toString()).child("userNm")
 
-        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            @SuppressLint("SetTextI18n")
+        val userListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                findViewById<TextView>(R.id.text).text = dataSnapshot.value.toString() + "님"
+                val userName = dataSnapshot.value
+                if (userName != null) {
+                    findViewById<TextView>(R.id.text).text = userName.toString() + "님"
+                }
             }
 
-            override fun onCancelled(error: DatabaseError) {
+            override fun onCancelled(databaseError: DatabaseError) {
             }
-        })
+        }
+        userRef.addValueEventListener(userListener)
 
         val dLayout: DrawerLayout = findViewById(R.id.drawer_layout) // initiate a DrawerLayout
 

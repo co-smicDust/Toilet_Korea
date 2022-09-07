@@ -80,19 +80,19 @@ class QueryActivity : AppCompatActivity() {
     }
 
     private fun menDisabledFilter() {
-        if (toilet.menHandicapToiletBowlNumber!! > 0 || toilet.menHandicapUrinalNumber!! > 0) { toiletList.add(toilet) }
+        if (toilet.menHandicapToiletBowlNumber != 0 || toilet.menHandicapUrinalNumber != 0) { toiletList.add(toilet) }
     }
 
     private fun womenDisabledFilter() {
-        if (toilet.ladiesHandicapToiletBowlNumber!! > 0) { toiletList.add(toilet) }
+        if (toilet.ladiesHandicapToiletBowlNumber != 0) { toiletList.add(toilet) }
     }
 
     private fun menWithChildrenFilter() {
-        if (toilet.menChildrenToiletBowlNumber!! > 0 || toilet.menChildrenUrinalNumber!! > 0) { toiletList.add(toilet) }
+        if (toilet.menChildrenToiletBowlNumber != 0 || toilet.menChildrenUrinalNumber != 0) { toiletList.add(toilet) }
     }
 
     private fun womenWithChildrenFilter() {
-        if (toilet.ladiesChildrenToiletBowlNumber!! > 0) { toiletList.add(toilet) }
+        if (toilet.ladiesChildrenToiletBowlNumber != 0) { toiletList.add(toilet) }
     }
 
     override fun onStart() {

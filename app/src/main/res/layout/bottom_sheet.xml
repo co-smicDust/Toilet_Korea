@@ -26,22 +26,12 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
 
-
                     <ImageButton
                         android:id="@+id/cancelBtn"
                         android:layout_width="?attr/actionBarSize"
                         android:layout_height="?attr/actionBarSize"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_cancel"
-                        app:tint="@android:color/white" />
-
-                    <ImageButton
-                        android:id="@+id/editBtn"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:layout_marginStart="300dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_edit"
                         app:tint="@android:color/white" />
 
                 </LinearLayout>
@@ -73,6 +63,8 @@
                         android:id="@+id/bottomSheet"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="15dp"
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -115,25 +107,10 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="15dp"
-                                android:layout_marginBottom="10dp"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginBottom="15dp"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal">
-
-                                <RatingBar
-                                    style="?android:attr/ratingBarStyleIndicator"
-                                    android:layout_width="180dp"
-                                    android:layout_height="40dp"
-                                    android:numStars="5"
-                                    android:rating="3.5"
-                                    android:stepSize="0.5" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="4.7 (51)"
-                                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
-
 
                             </LinearLayout>
 
@@ -232,6 +209,98 @@
 
                             </LinearLayout>
 
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginStart="@dimen/spacing_large"
+                                android:layout_marginVertical="@dimen/spacing_large"
+                                android:background="@color/grey_10" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:text="상세정보"
+                                    android:textColor="@color/grey_90"
+                                    android:textSize="20dp"
+                                    android:paddingStart="@dimen/spacing_small"
+                                    android:paddingEnd="@dimen/spacing_small" />
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="15dp" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:id="@+id/unisexToiletYn" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:id="@+id/menToiletBowlNumber" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:id="@+id/menUrineNumber" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:id="@+id/menHandicapToiletBowlNumber" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:id="@+id/menHandicapUrinalNumber" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:id="@+id/menChildrenToiletBowlNumber" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:id="@+id/menChildrenUrinalNumber" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:id="@+id/ladiesToiletBowlNumber" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:id="@+id/ladiesHandicapToiletBowlNumber" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:id="@+id/ladiesChildrenToiletBowlNumber" />
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="15dp" />
+
+                            </LinearLayout>
+
                         </LinearLayout>
 
                     </LinearLayout>
@@ -246,30 +315,9 @@
                         app:layout_constraintStart_toStartOf="parent"
                         android:inputType="text|textMultiLine"
                         android:scrollbars="vertical"
-                        android:lines="6"
+                        android:lines="4"
                         android:gravity="top|left"/>
 
-                    <LinearLayout
-                        android:id="@+id/rating_wrap_layout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="별점 : " />
-                        <RatingBar
-                            android:id="@+id/ratingBar"
-                            style="?android:attr/ratingBarStyleIndicator"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:numStars="5"
-                            android:rating="0"
-                            android:stepSize="0.5"
-                            android:isIndicator="false"/>
-                    </LinearLayout>
 
                     <Button
                         android:id="@+id/confirmButton"
@@ -280,13 +328,6 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="@dimen/spacing_large"
-                        android:layout_marginVertical="@dimen/spacing_large"
-                        android:background="@color/grey_10" />
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
@@ -296,132 +337,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/toiletNm" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/rdnmadr" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/lnmadr" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/unisexToiletYn" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/menToiletBowlNumber" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/menUrineNumber" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/menHandicapToiletBowlNumber" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/menHandicapUrinalNumber" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/menChildrenToiletBowlNumber" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/menChildrenUrinalNumber" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/ladiesToiletBowlNumber" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/ladiesHandicapToiletBowlNumber" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/ladiesChildrenToiletBowlNumber" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/phoneNumber" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/openTime" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/position" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/emgBellYn" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/enterentCctvYn" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/dipersExchgPosi" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:id="@+id/toiletNum" />
-
-                    </LinearLayout>
 
                 </LinearLayout>
 

@@ -46,55 +46,6 @@
                         android:minHeight="50dp"
                         android:paddingStart="@dimen/spacing_small"
                         android:paddingEnd="@dimen/spacing_small"
-                        android:text="별점 설정"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-                    <CheckBox
-                        android:id="@+id/star4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="4점 이상" />
-
-                    <CheckBox
-                        android:id="@+id/star3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="3점 이상 4점 미만" />
-
-                    <CheckBox
-                        android:id="@+id/star2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="2점 이상 3점 미만" />
-
-                    <CheckBox
-                        android:id="@+id/starUnder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="2점 이하" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginStart="@dimen/spacing_large"
-                        android:layout_marginVertical="@dimen/spacing_large"
-                        android:background="@color/grey_10" />
-
-                    <TextView
-                        android:layout_width="312dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/spacing_large"
-                        android:gravity="center_vertical"
-                        android:minHeight="50dp"
-                        android:paddingStart="@dimen/spacing_small"
-                        android:paddingEnd="@dimen/spacing_small"
                         android:text="거리 설정"
                         android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
@@ -167,12 +118,6 @@
                         android:text="장애인 화장실(여성)" />
 
                     <CheckBox
-                        android:id="@+id/diaper"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="기저귀 교환대" />
-
-                    <CheckBox
                         android:id="@+id/menWithChildren"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -183,18 +128,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="영유아 동반 화장실(여성)" />
-
-                    <CheckBox
-                        android:id="@+id/feminineProducts"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="여성용품 자판기" />
-
-                    <CheckBox
-                        android:id="@+id/cctv"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="입구 CCTV" />
 
                 </LinearLayout>
 

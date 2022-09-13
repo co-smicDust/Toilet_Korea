@@ -25,22 +25,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <RatingBar
-            android:id="@+id/star"
-            android:layout_width="250dp"
-            android:layout_height="50dp"
-            android:numStars="5"
-            android:rating="3.5"
-            android:stepSize="0.5"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="150dp"
-            android:padding="5dp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/review"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <TextView
             android:id="@+id/userName"
             android:layout_width="match_parent"
@@ -50,7 +34,7 @@
             android:layout_marginEnd="8dp"
             android:padding="5dp"
             android:text="'빨간망토' 님의 리뷰"
-            app:layout_constraintTop_toBottomOf="@+id/star"
+            app:layout_constraintTop_toBottomOf="@+id/review"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

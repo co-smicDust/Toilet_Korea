@@ -175,9 +175,6 @@ class BottomSheet : BottomSheetDialogFragment() {
         view?.findViewById<TextView>(R.id.phone_number)?.text = phoneNumber
         view?.findViewById<TextView>(R.id.open_time)?.text = openTime
 
-        view?.findViewById<TextView>(R.id.toiletNm)?.text = "화장실명: $toiletNm"
-        view?.findViewById<TextView>(R.id.rdnmadr)?.text = "소재지도로명주소: $rdnmadr"
-        view?.findViewById<TextView>(R.id.lnmadr)?.text = "소재지지번주소: $lnmadr"
         view?.findViewById<TextView>(R.id.unisexToiletYn)?.text = "남녀공용화장실여부: $unisexToiletYn"
         view?.findViewById<TextView>(R.id.menToiletBowlNumber)?.text = "남성용-대변기수: $menToiletBowlNumber"
         view?.findViewById<TextView>(R.id.menUrineNumber)?.text = "남성용-소변기수: $menUrineNumber"
@@ -188,12 +185,6 @@ class BottomSheet : BottomSheetDialogFragment() {
         view?.findViewById<TextView>(R.id.ladiesToiletBowlNumber)?.text = "여성용-대변기수: $ladiesToiletBowlNumber"
         view?.findViewById<TextView>(R.id.ladiesHandicapToiletBowlNumber)?.text = "여성용-장애인용대변기수: $ladiesHandicapToiletBowlNumber"
         view?.findViewById<TextView>(R.id.ladiesChildrenToiletBowlNumber)?.text = "여성용-어린이용대변기수: $ladiesChildrenToiletBowlNumber"
-        view?.findViewById<TextView>(R.id.phoneNumber)?.text = "전화번호: $phoneNumber"
-        view?.findViewById<TextView>(R.id.openTime)?.text = "개방시간: $openTime"
-        view?.findViewById<TextView>(R.id.position)?.text = "위치(좌표): $position"
-        view?.findViewById<TextView>(R.id.emgBellYn)?.text = "비상벨설치: $emgBellYn"
-        view?.findViewById<TextView>(R.id.enterentCctvYn)?.text = "화장실입구CCTV설치유무: $enterentCctvYn"
-        view?.findViewById<TextView>(R.id.dipersExchgPosi)?.text = "기저귀교환대장소: $dipersExchgPosi"
 
         view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = ReviewAdapter
         view?.findViewById<RecyclerView>(R.id.recyclerView)?.layoutManager = LinearLayoutManager(getActivity())

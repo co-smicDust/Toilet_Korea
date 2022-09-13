@@ -43,7 +43,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     // 현재위치를 가져올수 없는 경우 서울 시청의 위치로 지도를 보여주기 위해 서울시청의 위치를 변수로 선언
     // LatLng 클래스는 위도와 경도를 가지는 클래스
-    val CITY_HALL = LatLng(37.50203121152806, 127.03054633381461)
+    val CITY_HALL = LatLng(37.4272309, 126.99090478)
 
     // 구글 맵 객체를 참조할 멤버 변수
     var googleMap: GoogleMap? = null
@@ -202,7 +202,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     fun getDistance(latitude: Double, longitude: Double): Int {
-        val currentLatLng = MapFragment().getMyLocation()
+        val currentLatLng = getMyLocation()
 
         val locationA = Location("A")
         val locationB = Location("B")
@@ -229,7 +229,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     fun distanceFilter(latitude: Double, longitude: Double) {
 
                         val distance = getDistance(latitude, longitude)
-                        if (distance <= 2000) {
+                        if (distance <= 1000) {
                             map = toilet!!.toMap()
                             addMarkers(map)
                         }

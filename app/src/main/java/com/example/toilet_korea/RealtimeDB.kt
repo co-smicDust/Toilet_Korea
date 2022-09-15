@@ -33,6 +33,8 @@ class RealtimeDB : AppCompatActivity() {
             //데이터의 전체 개수를 저장하기 위한 프로퍼티
             var count = 350
 
+            database.child("toilet").removeValue()
+
             do {
                 //파싱할 URL 생성
                 val url =
@@ -61,10 +63,11 @@ class RealtimeDB : AppCompatActivity() {
 
                 //JSON 파싱
                 // 전체가 객체로 묶여있기 때문에 객체형태로 가져옴
+
                 val root = JSONObject(buf.toString())
                 val response = root.getJSONObject("response")
                 val body = response.getJSONObject("body")
-                val items = body.getJSONArray("items") // 객체 안에 있는 item이라는 이름의 리스트를 가져옴
+                val items = body.getJSONArray("items")
 
 
                 for (i in 0 until items.length()) {

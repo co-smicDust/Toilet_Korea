@@ -25,7 +25,7 @@ class RealtimeDB : AppCompatActivity() {
 
         thread {
             val API_KEY =
-                "dbfTaH38sAn%2BuSkkba91GDEz5yXxlSyQmXg3si7fYYhixama3C8TPxXHwhq%2BPtntBSA8NXikhNlIE4qcLjx42w%3D%3D"
+                "g5i7qJn8Mi5NKv%2FXkSxItQQmoXGzQfgjtj0UdKXYURG4OfE%2BOS%2BxD17cMRFYH22ISNcxiTJw68PboMhNllrnWA%3D%3D"
 
             //데이터의 시작과 종료 인덱스
             var pageNo = 1
@@ -36,6 +36,7 @@ class RealtimeDB : AppCompatActivity() {
 
 
             database.child("toilet").removeValue()
+
             do {
                 //파싱할 URL 생성
                 val url =

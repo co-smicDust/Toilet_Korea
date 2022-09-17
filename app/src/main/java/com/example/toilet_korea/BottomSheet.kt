@@ -170,8 +170,12 @@ class BottomSheet : BottomSheetDialogFragment() {
         hideAppBar()
         bottomSheetBehavior?.state ?: BottomSheetBehavior.STATE_COLLAPSED
 
+        val address = if(lnmadr != "null"){
+            lnmadr
+        }else rdnmadr
+
         view?.findViewById<TextView>(R.id.name)?.text = toiletNm
-        view?.findViewById<TextView>(R.id.address)?.text = lnmadr
+        view?.findViewById<TextView>(R.id.address)?.text = address
         view?.findViewById<TextView>(R.id.phone_number)?.text = phoneNumber
         view?.findViewById<TextView>(R.id.open_time)?.text = openTime
 

@@ -33,6 +33,7 @@ class RealtimeDB : AppCompatActivity() {
             //데이터의 전체 개수를 저장하기 위한 프로퍼티
             var count = 350
 
+            database.child("toilet").removeValue()
             do {
                 //파싱할 URL 생성
                 val url =

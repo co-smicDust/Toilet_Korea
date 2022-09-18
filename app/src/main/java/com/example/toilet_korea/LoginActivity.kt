@@ -29,7 +29,6 @@ class LoginActivity : AppCompatActivity() {
     val userRef = database.child("User")
     val currentUser = Firebase.auth.currentUser
 
-
     lateinit var signInIntent: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,16 +73,21 @@ class LoginActivity : AppCompatActivity() {
                                     ValueEventListener {
                                     override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                                        //이미 저장된 ID라면 바로 접속
+                                        val ids = ArrayList<String>()
+
                                         for (i in dataSnapshot.children.iterator()) {
                                             val userID = i.key
-                                            if(userID == currentUID)
-                                                moveMainPage(resultUser)
+                                            ids.add(userID.toString())
                                         }
 
-                                        //처음 로그인한다면 ID 저장 후 접속
-                                        userRef.child(currentUID.toString()).setValue(User(currentUID.toString()))
-                                        moveMainPage(resultUser)
+                                        //이미 저장된 ID라면 바로 접속
+                                        if (ids.contains(currentUID))
+                                            moveMainPage(resultUser)
+                                        else{
+                                            //처음 로그인한다면 ID 저장 후 접속
+                                            userRef.child(currentUID.toString()).setValue(User(currentUID.toString()))
+                                            moveMainPage(resultUser)
+                                        }
 
                                     }
 

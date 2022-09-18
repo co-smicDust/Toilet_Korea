@@ -2,18 +2,15 @@ package com.example.toilet_korea
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.toilet_korea.databinding.ActivityQueryBinding
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.*
-import com.google.maps.android.clustering.ClusterManager
 
 
 class QueryActivity : AppCompatActivity() {
@@ -74,7 +71,7 @@ class QueryActivity : AppCompatActivity() {
     }
 
 
-    fun getDistance(latitude: Double, longitude: Double): Int {
+    private fun getDistance(latitude: Double, longitude: Double): Int {
 
         val locationA = Location("A")
         val locationB = Location("B")

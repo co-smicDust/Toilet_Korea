@@ -60,25 +60,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val args: Bundle? = intent.getParcelableExtra("args")
-
-        if (args != null && args.containsKey("latlng")) {
-            val position: LatLng = args.getParcelable("latlng")!!
-            val showRoute = args.getBoolean("showRoute", false)
-
-            val pass = Bundle()
-            pass.putParcelable("latlng", position)
-            pass.putBoolean("showRoute", showRoute)
-
-            if (showRoute){
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.frame, mainFragment)
-                    .commit()
-
-                mainFragment.arguments = pass
-            }
-        }
-
         //비상연락 버튼클릭이벤트 - DangerCall (원래는 상단바에 플로팅 버튼, 후기창으로 옮김)
         //myContactButton.setOnClickListener { onMyContactButtonClick() }
 

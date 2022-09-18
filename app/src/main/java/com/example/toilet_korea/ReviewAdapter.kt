@@ -9,7 +9,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class ReviewAdapter(var context: Context, var newsList: ArrayList<ReviewData>) : RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
+class ReviewAdapter(var context: Context?, var newsList: ArrayList<ReviewData>) : RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
 

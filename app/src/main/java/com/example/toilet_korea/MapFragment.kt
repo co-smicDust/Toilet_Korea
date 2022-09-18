@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -325,6 +326,31 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (searching == true){
                 googleMap?.moveCamera(
                     CameraUpdateFactory.newLatLngZoom(chosenPosition, DEFAULT_ZOOM_LEVEL))
+
+                val special = googleMap?.addMarker(
+                    MarkerOptions()
+                        .position(LatLng(toilet.latitude, toilet.longitude))
+                        .title(toilet.toiletNm as String)
+                        .snippet(toilet.lnmadr as String)
+                )
+
+                special?.tag = toilet.rdnmadr + "/" +
+                        toilet.unisexToiletYn + "/" +
+                        toilet.phoneNumber + "/" +
+                        toilet.openTime + "/" +
+                        toilet.emgBellYn + "/" +
+                        toilet.enterentCctvYn + "/" +
+                        toilet.dipersExchgPosi + "/" +
+
+                        toilet.menToiletBowlNumber.toString() + "/" +
+                        toilet.menUrineNumber.toString() + "/" +
+                        toilet.menHandicapToiletBowlNumber.toString() + "/" +
+                        toilet.menHandicapUrinalNumber.toString() + "/" +
+                        toilet.menChildrenToiletBowlNumber.toString() + "/" +
+                        toilet.menChildrenUrinalNumber.toString() + "/" +
+                        toilet.ladiesToiletBowlNumber.toString() + "/" +
+                        toilet.ladiesHandicapToiletBowlNumber.toString() + "/" +
+                        toilet.ladiesChildrenToiletBowlNumber.toString()
 
                 val args = Bundle()
                 args.putString("toiletNm", toilet.toiletNm)

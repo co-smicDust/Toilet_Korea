@@ -55,26 +55,8 @@ class QueryActivity : AppCompatActivity() {
         currentLatLng = getMyLocation()
     }
 
-    @SuppressLint("MissingPermission")
-    fun getMyLocation(): LatLng {
-        // 위치를 측정하는 프로바이더를 GPS 센서로 지정
-        val locationProvider: String = LocationManager.GPS_PROVIDER
-        // 위치 서비스 객체를 불러옴
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        // 마지막으로 업데이트된 위치를 가져옴
-        val lastKnownLocation: Location? = locationManager.getLastKnownLocation(locationProvider)
-        // 위도 경도 객체로 반환
-        return if (lastKnownLocation != null) {
-            // 위도 경도 객체로 반환
-            LatLng(lastKnownLocation.latitude, lastKnownLocation.longitude)
-        } else {
-            // 위치를 구하지 못한경우 기본값 반환
-            CITY_HALL
-        }
-    }
-
-
-    private fun getDistance(latitude: Double, longitude: Double): Int {
+    fun getDistance(latitude: Double, longitude: Double): Int {
+        val currentLatLng = MapFragment().getMyLocation()
 
         val locationA = Location("A")
         val locationB = Location("B")

@@ -4,23 +4,32 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.location.LocationManager
-import android.os.*
-import android.view.*
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.maps.android.clustering.ClusterManager
 
 class MapFragment : Fragment(), OnMapReadyCallback {
+
+    private var clusterManager: ClusterManager<MyItem?>? = null
 
     val database: DatabaseReference = Firebase.database.reference
 
@@ -62,6 +71,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return rootView
     }
 
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -91,11 +101,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapView!!.onLowMemory()
     }
 
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap) {
         MapsInitializer.initialize(this.requireActivity())
 
         // 앱이 실행될때 런타임에서 위치 서비스 관련 권한체크
         if (hasPermissions()) {
+
+            // 클러스터 매니저 세팅
+            clusterManager = ClusterManager(context, googleMap)
+            googleMap.setOnCameraIdleListener(clusterManager)
+            googleMap.setOnMarkerClickListener(clusterManager)
+
+            val clusterRenderer: MarkerClusterRenderer =
+                MarkerClusterRenderer(context, googleMap, clusterManager)
+            clusterManager!!.renderer = clusterRenderer
+
             // 권한이 있는 경우 맵 초기화
             initMap()
         } else {
@@ -182,18 +203,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    // 화장실 이미지로 사용할 Bitmap
-    // Lazy 는 바로 생성하지 않고 처음 사용 될 때 생성하는 문법
-    val bitmap by lazy {
-        val drawable = resources.getDrawable(R.drawable.restroom_sign, null) as BitmapDrawable
-        Bitmap.createScaledBitmap(drawable.bitmap, 64, 64, false)
-    }
-
-
     //DB의 toilet reference
     val toiletRef = database.child("toilet")
-
-    var map = mutableMapOf<String, Any?>()
 
     inner class ToiletThread : Thread() {
         override fun run() {
@@ -224,104 +235,71 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         override fun handleMessage(msg: Message) {
 
             toiletRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("PotentialBehaviorOverride")
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                    fun distanceFilter(latitude: Double, longitude: Double) {
-
-                        val distance = getDistance(latitude, longitude)
-                        if (distance <= 1000) {
-                            map = toilet!!.toMap()
-                            addMarkers(map)
-                        }
-                    }
 
                     if (dataSnapshot.exists()) {
                         // looping through to values
                         for (i in dataSnapshot.children) {
                             toilet = i.getValue(Toilet::class.java)
 
-                            if (toilet?.latitude != null && toilet?.longitude != null)
-                                distanceFilter(toilet?.latitude!!, toilet?.longitude!!)
+                            if (toilet?.latitude != null && toilet?.longitude != null){
+
+                                val item = MyItem(toilet!!)
+                                clusterManager?.addItem(item)
+
+                            }
+
+                            googleMap?.setOnInfoWindowClickListener(GoogleMap.OnInfoWindowClickListener {
+
+                                val arr = it.tag.toString().split("/") //마커에 붙인 태그
+                                val args = Bundle()
+                                args.putString("toiletNm", it.title.toString())
+                                args.putString("rdnmadr", arr[0])
+                                args.putString("lnmadr", it.snippet.toString())
+                                args.putString("unisexToiletYn", arr[1])
+                                args.putString("menToiletBowlNumber", arr[7])
+                                args.putString("menUrineNumber", arr[8])
+                                args.putString("menHandicapToiletBowlNumber", arr[9])
+                                args.putString("menHandicapUrinalNumber", arr[10])
+                                args.putString("menChildrenToiletBowlNumber", arr[11])
+                                args.putString("menChildrenUrinalNumber", arr[12])
+                                args.putString("ladiesToiletBowlNumber", arr[13])
+                                args.putString("ladiesHandicapToiletBowlNumber", arr[14])
+                                args.putString("ladiesChildrenToiletBowlNumber", arr[15])
+                                args.putString("phoneNumber", arr[2])
+                                args.putString("openTime", arr[3])
+                                args.putString("position", it.position.toString())
+                                args.putString("emgBellYn", arr[4])
+                                args.putString("enterentCctvYn", arr[5])
+                                args.putString("dipersExchgPosi", arr[6])
+
+                                args.putParcelable("latlng", it.position)
+
+                                bottomSheet.arguments = args
+                                bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+
+                                googleMap?.moveCamera(
+                                    CameraUpdateFactory.newLatLngZoom(it.position, DEFAULT_ZOOM_LEVEL))
+
+                                return@OnInfoWindowClickListener
+                            })
                         }
+                        // 데이터 파싱 후 줌아웃을 함으로써 마커 표출 가능
+                        // 그렇지 않으면 사용자가 직접 줌아웃을 한 이후에 마커 확인 가능
+                        googleMap?.animateCamera(CameraUpdateFactory.zoomOut())
                     }
+
                 }
                 override fun onCancelled(databaseError: DatabaseError) {}
             })
         }
     }
 
-    // 마커를 추가하는 함수
-    @SuppressLint("PotentialBehaviorOverride")
-    fun addMarkers(toilet: MutableMap<String, Any?>) {
-        // 맵이 직접 마커를 생성
-        val marker: Marker? = googleMap?.addMarker(
-            MarkerOptions()
-                .position(LatLng(toilet["latitude"] as Double, toilet["longitude"] as Double))
-                .title(toilet["toiletNm"] as String)
-                .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
-                .snippet(toilet["lnmadr"] as String)
-        )
-
-        marker?.tag =
-            toilet["rdnmadr"] as String + "/" +
-                    toilet["unisexToiletYn"] as String + "/" +
-                    toilet["phoneNumber"] as String + "/" +
-                    toilet["openTime"] as String + "/" +
-                    toilet["emgBellYn"] as String + "/" +
-                    toilet["enterentCctvYn"] as String + "/" +
-                    toilet["dipersExchgPosi"] as String + "/" +
-
-                    toilet["menToiletBowlNumber"].toString() + "/" +
-                    toilet["menUrineNumber"].toString() + "/" +
-                    toilet["menHandicapToiletBowlNumber"].toString() + "/" +
-                    toilet["menHandicapUrinalNumber"].toString() + "/" +
-                    toilet["menChildrenToiletBowlNumber"].toString() + "/" +
-                    toilet["menChildrenUrinalNumber"].toString() + "/" +
-                    toilet["ladiesToiletBowlNumber"].toString() + "/" +
-                    toilet["ladiesHandicapToiletBowlNumber"].toString() + "/" +
-                    toilet["ladiesChildrenToiletBowlNumber"].toString()
-
-        googleMap?.setOnMarkerClickListener(GoogleMap.OnMarkerClickListener { // TODO Auto-generated method stub
-
-            val arr = it.tag.toString().split("/") //마커에 붙인 태그
-            val args = Bundle()
-            args.putString("toiletNm", it.title.toString())
-            args.putString("rdnmadr", arr[0])
-            args.putString("lnmadr", it.snippet.toString())
-            args.putString("unisexToiletYn", arr[1])
-            args.putString("menToiletBowlNumber", arr[7])
-            args.putString("menUrineNumber", arr[8])
-            args.putString("menHandicapToiletBowlNumber", arr[9])
-            args.putString("menHandicapUrinalNumber", arr[10])
-            args.putString("menChildrenToiletBowlNumber", arr[11])
-            args.putString("menChildrenUrinalNumber", arr[12])
-            args.putString("ladiesToiletBowlNumber", arr[13])
-            args.putString("ladiesHandicapToiletBowlNumber", arr[14])
-            args.putString("ladiesChildrenToiletBowlNumber", arr[15])
-            args.putString("phoneNumber", arr[2])
-            args.putString("openTime", arr[3])
-            args.putString("position", it.position.toString())
-            args.putString("emgBellYn", arr[4])
-            args.putString("enterentCctvYn", arr[5])
-            args.putString("dipersExchgPosi", arr[6])
-
-            args.putParcelable("latlng", it.position)
-
-            bottomSheet.arguments = args
-            bottomSheet.show(parentFragmentManager, bottomSheet.tag)
-
-            googleMap?.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(it.position, DEFAULT_ZOOM_LEVEL))
-
-            return@OnMarkerClickListener true
-        })
-    }
-
-
-
     var toiletThread: ToiletThread? = null
 
     // 앱이 활성화될때 화장실 데이터를 읽어옴
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onStart() {
         super.onStart()
         if (toiletThread == null) {

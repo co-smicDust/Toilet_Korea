@@ -305,6 +305,66 @@
 
                     </LinearLayout>
 
+                    <EditText
+                        android:id="@+id/contentText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:hint="화장실 후기를 작성해주세요!"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:inputType="text|textMultiLine"
+                        android:scrollbars="vertical"
+                        android:lines="6"
+                        android:gravity="top|left"/>
+
+                    <LinearLayout
+                        android:id="@+id/rating_wrap_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="별점 : " />
+                        <RatingBar
+                            android:id="@+id/ratingBar"
+                            style="?android:attr/ratingBarStyleIndicator"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:numStars="5"
+                            android:rating="0"
+                            android:stepSize="0.5"
+                            android:isIndicator="false"/>
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/confirmButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="리뷰 남기기"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="@dimen/spacing_large"
+                        android:layout_marginVertical="@dimen/spacing_large"
+                        android:background="@color/grey_10" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                 </LinearLayout>
 
             </androidx.core.widget.NestedScrollView>

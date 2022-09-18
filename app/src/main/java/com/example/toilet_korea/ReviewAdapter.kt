@@ -1,29 +1,32 @@
 package com.example.toilet_korea
 
+import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.util.jar.Attributes
 
-class ReviewAdapter : RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
-    var items: MutableList<ReviewData> = mutableListOf(ReviewData("깨끗해요", "'빨간망토' 님의 리뷰"),
-        ReviewData("휴지가 없네요...", "'너무급해' 님의 리뷰"),ReviewData("굿굿", "'제발버텨' 님의 리뷰"),
-        ReviewData("시원하다", "'KSH' 님의 리뷰"),ReviewData("깨끗한 편이네요", "'LJY' 님의 리뷰")
-        ,ReviewData("건물 들어가서 오른쪽에 있어요", "'HSY' 님의 리뷰"))
-    override fun onCreateViewHolder(parent: ViewGroup, p1: Int) = ReviewViewHolder(parent)
-    override fun getItemCount(): Int = items.size
-    override fun onBindViewHolder(holer: ReviewViewHolder, position: Int) {
-        items[position].let { item ->
-            with(holer) {
-                Review.text = item.title
-                UserName.text = item.content
-            }
-        }
+class ReviewAdapter(var context: Context, var newsList: ArrayList<ReviewData>) : RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_review, parent, false)
+        return ViewHolder(view)
     }
-    inner class ReviewViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_review, parent, false)) {
-        val UserName = itemView.findViewById<TextView>(R.id.userName)
-        val Review = itemView.findViewById<TextView>(R.id.review)
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = newsList[position]
+
+        holder.itemView.findViewById<TextView>(R.id.userNm).text = item.userNm
+        holder.itemView.findViewById<TextView>(R.id.contentR).text = item.content
+        if (item.rate != null)
+            holder.itemView.findViewById<RatingBar>(R.id.ratingStar).rating = item.rate!!.toFloat()
+        holder.itemView.findViewById<ImageView>(R.id.imageView).setImageResource(item.image)
     }
+
+    override fun getItemCount() = newsList.size
 }

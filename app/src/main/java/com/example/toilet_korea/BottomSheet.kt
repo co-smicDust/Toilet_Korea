@@ -8,12 +8,11 @@ import android.content.Intent.ACTION_DIAL
 import android.content.Intent.ACTION_SENDTO
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +24,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+
 
 var toiletNm: String? = null
 var rdnmadr: String? = null
@@ -77,7 +84,16 @@ class BottomSheet : BottomSheetDialogFragment() {
         })
     }
 
-    private val ReviewAdapter = ReviewAdapter()
+    //리뷰 관련
+    val database: DatabaseReference = Firebase.database.reference
+    private val currentUser = Firebase.auth.currentUser
+    var curUID = currentUser?.uid.toString()
+    var nickname: String? = null
+
+    private lateinit var reviews: ReviewData
+
+    private lateinit var reviewAdapter: ReviewAdapter
+    private var newsList: ArrayList<ReviewData> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,9 +167,53 @@ class BottomSheet : BottomSheetDialogFragment() {
 
 
     //button clicked
+    @SuppressLint("CutPasteId")
     @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        database.child("User").child(curUID).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                nickname = snapshot.child("userNm").value.toString()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+
+        val reviewRef = database.child("Review").child(toiletNm.toString())
+
+        //리뷰 바텀시트 하단에 불러오기(아래 Unresolved Ref들은 레이아웃에 아이디 추가해야 함)
+        reviewRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            @SuppressLint("CutPasteId")
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                newsList.clear()
+
+                if (snapshot.exists()) {
+                    // looping through to values
+                    for (i in snapshot.children) {
+
+                        reviews = i.getValue(ReviewData::class.java)!!
+                        Log.d("와우", reviews.userNm.toString())
+                        Log.d("와우", reviews.content.toString())
+
+                        newsList.add(reviews)
+                    }
+                }
+
+                reviewAdapter = ReviewAdapter(context!!, newsList)
+                view?.findViewById<RecyclerView>(R.id.recyclerView)?.layoutManager = LinearLayoutManager(context)
+                view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = reviewAdapter
+                view?.findViewById<RecyclerView>(R.id.recyclerView)?.setHasFixedSize(true)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+
+        // x를 누르면 dialog 닫힘
         view?.findViewById<ImageButton>(R.id.cancelBtn)?.setOnClickListener {
             dismiss()
         }
@@ -161,6 +221,27 @@ class BottomSheet : BottomSheetDialogFragment() {
         //비상연락 버튼클릭이벤트 - DangerCall
         view?.findViewById<FloatingActionButton>(R.id.SOSbtn)?.setOnClickListener {
             showDialog()
+        }
+
+        //리뷰 쓰기
+        view?.findViewById<Button>(R.id.confirmButton)?.setOnClickListener {
+            val contentText = view?.findViewById<EditText>(R.id.contentText)?.text
+            val rate: Double = view?.findViewById<RatingBar>(R.id.ratingBar)?.rating!!.toDouble()
+
+            if (contentText.toString() != "" && rate > 0){
+                //toiletNum-review에 리뷰 저장
+
+                reviewRef.child(curUID).child("rate").setValue(rate)
+                reviewRef.child(curUID).child("content").setValue(contentText.toString())
+                reviewRef.child(curUID).child("userNm").setValue(nickname)
+                reviewRef.child(curUID).child("image").setValue(R.drawable.ic_personal)
+
+                Toast.makeText(context, "리뷰가 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                contentText?.clear()
+                view?.findViewById<RatingBar>(R.id.ratingBar)?.rating = 0.0F
+            } else {
+                Toast.makeText(context, "별점이나 리뷰를 작성해주세요.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -198,10 +279,6 @@ class BottomSheet : BottomSheetDialogFragment() {
         view?.findViewById<TextView>(R.id.emgBellYn)?.text = "비상벨설치: $emgBellYn"
         view?.findViewById<TextView>(R.id.enterentCctvYn)?.text = "화장실입구CCTV설치유무: $enterentCctvYn"
         view?.findViewById<TextView>(R.id.dipersExchgPosi)?.text = "기저귀교환대장소: $dipersExchgPosi"
-
-        view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = ReviewAdapter
-        view?.findViewById<RecyclerView>(R.id.recyclerView)?.layoutManager = LinearLayoutManager(getActivity())
-        view?.findViewById<RecyclerView>(R.id.recyclerView)?.setHasFixedSize(true)
     }
 
     private fun hideAppBar() {

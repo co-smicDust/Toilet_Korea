@@ -202,7 +202,7 @@ class BottomSheet : BottomSheetDialogFragment() {
                     }
                 }
 
-                reviewAdapter = ReviewAdapter(context!!, newsList)
+                reviewAdapter = ReviewAdapter(context, newsList)
                 view?.findViewById<RecyclerView>(R.id.recyclerView)?.layoutManager = LinearLayoutManager(context)
                 view?.findViewById<RecyclerView>(R.id.recyclerView)?.adapter = reviewAdapter
                 view?.findViewById<RecyclerView>(R.id.recyclerView)?.setHasFixedSize(true)

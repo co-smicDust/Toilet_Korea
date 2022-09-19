@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -52,7 +53,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     // 현재위치를 가져올수 없는 경우 서울 시청의 위치로 지도를 보여주기 위해 서울시청의 위치를 변수로 선언
     // LatLng 클래스는 위도와 경도를 가지는 클래스
-    val CITY_HALL = LatLng(37.4272309, 126.99090478)
+    val CITY_HALL = LatLng(37.50203121152806, 127.03054633381461)
 
     // 구글 맵 객체를 참조할 멤버 변수
     var googleMap: GoogleMap? = null
@@ -325,6 +326,31 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (searching == true){
                 googleMap?.moveCamera(
                     CameraUpdateFactory.newLatLngZoom(chosenPosition, DEFAULT_ZOOM_LEVEL))
+
+                val special = googleMap?.addMarker(
+                    MarkerOptions()
+                        .position(LatLng(toilet.latitude, toilet.longitude))
+                        .title(toilet.toiletNm as String)
+                        .snippet(toilet.lnmadr as String)
+                )
+
+                special?.tag = toilet.rdnmadr + "/" +
+                        toilet.unisexToiletYn + "/" +
+                        toilet.phoneNumber + "/" +
+                        toilet.openTime + "/" +
+                        toilet.emgBellYn + "/" +
+                        toilet.enterentCctvYn + "/" +
+                        toilet.dipersExchgPosi + "/" +
+
+                        toilet.menToiletBowlNumber.toString() + "/" +
+                        toilet.menUrineNumber.toString() + "/" +
+                        toilet.menHandicapToiletBowlNumber.toString() + "/" +
+                        toilet.menHandicapUrinalNumber.toString() + "/" +
+                        toilet.menChildrenToiletBowlNumber.toString() + "/" +
+                        toilet.menChildrenUrinalNumber.toString() + "/" +
+                        toilet.ladiesToiletBowlNumber.toString() + "/" +
+                        toilet.ladiesHandicapToiletBowlNumber.toString() + "/" +
+                        toilet.ladiesChildrenToiletBowlNumber.toString()
 
                 val args = Bundle()
                 args.putString("toiletNm", toilet.toiletNm)

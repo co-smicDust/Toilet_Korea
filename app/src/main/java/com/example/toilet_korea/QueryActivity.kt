@@ -1,6 +1,9 @@
 package com.example.toilet_korea
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +30,9 @@ class QueryActivity : AppCompatActivity() {
     private var checked: String? = null
     private lateinit var arr: List<String>
 
+    private val CITY_HALL = MapFragment().CITY_HALL
+    private var currentLatLng:LatLng = CITY_HALL
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityQueryBinding.inflate(layoutInflater)
@@ -42,10 +48,30 @@ class QueryActivity : AppCompatActivity() {
 
         checked = intent.getStringExtra("checked")
         arr = checked?.split("/")!!
+
+        currentLatLng = getMyLocation()
     }
 
-    fun getDistance(latitude: Double, longitude: Double): Int {
-        val currentLatLng = MapFragment().getMyLocation()
+    @SuppressLint("MissingPermission")
+    fun getMyLocation(): LatLng {
+        // 위치를 측정하는 프로바이더를 GPS 센서로 지정
+        val locationProvider: String = LocationManager.GPS_PROVIDER
+        // 위치 서비스 객체를 불러옴
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        // 마지막으로 업데이트된 위치를 가져옴
+        val lastKnownLocation: Location? = locationManager.getLastKnownLocation(locationProvider)
+        // 위도 경도 객체로 반환
+        return if (lastKnownLocation != null) {
+            // 위도 경도 객체로 반환
+            LatLng(lastKnownLocation.latitude, lastKnownLocation.longitude)
+        } else {
+            // 위치를 구하지 못한경우 기본값 반환
+            CITY_HALL
+        }
+    }
+
+
+    private fun getDistance(latitude: Double, longitude: Double): Int {
 
         val locationA = Location("A")
         val locationB = Location("B")
@@ -57,7 +83,7 @@ class QueryActivity : AppCompatActivity() {
 
         //에뮬레이터에서 현재 위치를 구할 수 없어 임의로 기본값 선택.
         // 현재 위치 구할 수 있는 환경이라면, 위치 권한 거부했을 때의 기본값(현재 CITY_HALL)으로 바꿀 것 요망
-        return if (currentLatLng != LatLng(0.0, 0.0))
+        return if (currentLatLng != CITY_HALL)
             locationA.distanceTo(locationB).toInt()
         else 0
     }

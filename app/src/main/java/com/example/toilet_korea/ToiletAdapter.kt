@@ -1,12 +1,18 @@
 package com.example.toilet_korea
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.example.toilet_korea.databinding.ToiletRowBinding
+import com.google.android.gms.maps.model.LatLng
 
 class ToiletAdapter(private val toiletList: List<Toilet>) : RecyclerView.Adapter<ToiletAdapter.ToiletHolder>() {
 
@@ -19,8 +25,6 @@ class ToiletAdapter(private val toiletList: List<Toilet>) : RecyclerView.Adapter
         override fun areContentsTheSame(oldItem: Toilet, newItem: Toilet) =
             oldItem == newItem
     }
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToiletHolder {
         val itemBinding = ToiletRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -39,9 +43,48 @@ class ToiletAdapter(private val toiletList: List<Toilet>) : RecyclerView.Adapter
     }
 
     class ToiletHolder(private val itemBinding: ToiletRowBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+
+        @SuppressLint("MissingPermission")
+        fun getMyLocation(): LatLng {
+            // 위치를 측정하는 프로바이더를 GPS 센서로 지정
+            val locationProvider: String = LocationManager.GPS_PROVIDER
+            // 위치 서비스 객체를 불러옴
+            val locationManager = itemView.context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+            // 마지막으로 업데이트된 위치를 가져옴
+            val lastKnownLocation: Location? = locationManager?.getLastKnownLocation(locationProvider)
+            // 위도 경도 객체로 반환
+            return if (lastKnownLocation != null) {
+                // 위도 경도 객체로 반환
+                LatLng(lastKnownLocation.latitude, lastKnownLocation.longitude)
+            } else {
+                // 위치를 구하지 못한경우 기본값 반환
+                MapFragment().CITY_HALL
+            }
+        }
+
+        fun getDistance(latitude: Double, longitude: Double): Int {
+            val currentLatLng = getMyLocation()
+
+            val locationA = Location("A")
+            val locationB = Location("B")
+
+            locationA.latitude = currentLatLng.latitude
+            locationA.longitude = currentLatLng.longitude
+            locationB.latitude = latitude
+            locationB.longitude = longitude
+
+            //에뮬레이터에서 현재 위치를 구할 수 없어 임의로 기본값 선택.
+            // 현재 위치 구할 수 있는 환경이라면, 위치 권한 거부했을 때의 기본값(현재 CITY_HALL)으로 바꿀 것 요망
+            return if (currentLatLng != LatLng(0.0, 0.0))
+                locationA.distanceTo(locationB).toInt()
+            else 0
+        }
+
         @SuppressLint("SetTextI18n")
         fun bind(toilet: Toilet) {
-            val distance = QueryActivity().getDistance(toilet.latitude!!, toilet.longitude!!)
+
+
+            val distance = getDistance(toilet.latitude!!, toilet.longitude!!)
 
             itemBinding.tvName.text = toilet.toiletNm
             itemBinding.tvAddress.text = toilet.lnmadr

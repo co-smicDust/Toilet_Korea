@@ -62,7 +62,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="14dp"
-                    android:text="빨간망토"
+                    android:text="User"
                     android:textSize="20dp"
                     android:textColor="@color/black"
                     android:textAlignment="center"

@@ -1,7 +1,10 @@
 package com.example.toilet_korea
 
-import android.os.Bundle
+import android.annotation.SuppressLint
+import android.os.*
 import android.view.MenuItem
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +13,6 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -24,6 +26,11 @@ import com.google.firebase.ktx.Firebase
 class MainActivity : AppCompatActivity() {
 
     private val mainFragment = MapFragment()
+
+    val database: DatabaseReference = Firebase.database.reference
+
+    var toilets = ArrayList<Toilet>()
+    var toilet: Toilet? = null
 
     //뒤로가기 Listener역할을 할 Interface 생성
     interface onBackPressedListener {
@@ -44,13 +51,6 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
 
         setNavigationDrawer() // call method
-
-        if (savedInstanceState == null) {
-
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.frame, mainFragment)
-                .commit()
-        }
 
         val bundle = intent.getBundleExtra("bundle")
 
@@ -121,6 +121,7 @@ class MainActivity : AppCompatActivity() {
         val userRef = database.child("User").child(currentUser?.uid.toString()).child("userNm")
 
         val userListener = object : ValueEventListener {
+            @SuppressLint("SetTextI18n")
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val userName = dataSnapshot.value
                 if (userName != null) {
@@ -163,5 +164,76 @@ class MainActivity : AppCompatActivity() {
         // 처음 클릭 메시지
         Toast.makeText(this, "'뒤로' 버튼을 한번 더 누르시면 앱이 종료됩니다.", Toast.LENGTH_SHORT).show()
         backPressedTime = System.currentTimeMillis()
+    }
+
+    //DB의 toilet reference
+    val toiletRef = database.child("toilet")
+
+    inner class ToiletThread : Thread() {
+        override fun run() {
+            handler.sendEmptyMessage(0)
+        }
+    }
+
+    // 스레드가 다운로드 받아서 파싱한 결과를 가지고 맵 뷰에 마커를 출력해달라고 요청
+    val handler: Handler = object : Handler(Looper.getMainLooper()) {
+        override fun handleMessage(msg: Message) {
+
+            toiletRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("PotentialBehaviorOverride", "SetTextI18n")
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                    if (dataSnapshot.exists()) {
+
+                        // looping through to values
+                        for (i in dataSnapshot.children) {
+
+                            toilet = i.getValue(Toilet::class.java)!!
+
+                            if (toilet?.latitude != null && toilet?.longitude != null){
+                                toilets.add(toilet!!)
+                            }
+                        }
+
+                        DataHolder.instance.data = ArrayList<Toilet>(toilets)
+
+                        findViewById<ProgressBar>(R.id.pBar).visibility = View.GONE
+
+                        supportFragmentManager.beginTransaction()
+                            .replace(R.id.frame, mainFragment)
+                            .commit()
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {}
+            })
+        }
+    }
+
+    var toiletThread: ToiletThread? = null
+
+    // 앱이 활성화될때 화장실 데이터를 읽어옴
+    @SuppressLint("PotentialBehaviorOverride")
+    override fun onStart() {
+        super.onStart()
+
+        val toilets = DataHolder.instance.data
+
+        if (toilets == null){
+            findViewById<ProgressBar>(R.id.pBar).visibility = View.VISIBLE
+            if (toiletThread == null) {
+                toiletThread = ToiletThread()
+                toiletThread!!.start()
+            }
+        }else{
+            DataHolder.instance.data = ArrayList<Toilet>(toilets)
+        }
+    }
+
+    // 앱이 비활성화 될때 백그라운드 작업 취소
+    override fun onStop() {
+        super.onStop()
+        toiletThread?.isInterrupted
+        toiletThread = null
     }
 }

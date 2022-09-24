@@ -15,14 +15,14 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer
 class MarkerClusterRenderer(
     context: Context?,
     map: GoogleMap,
-    clusterManager: ClusterManager<MyItem?>?
+    clusterManager: ClusterManager<Toilet?>?
 ) :
-    DefaultClusterRenderer<MyItem>(context, map, clusterManager) {
+    DefaultClusterRenderer<Toilet>(context, map, clusterManager) {
 
     val c = context
 
     override fun onBeforeClusterItemRendered(
-        item: MyItem,
+        item: Toilet,
         markerOptions: MarkerOptions
     ) {
 
@@ -39,7 +39,7 @@ class MarkerClusterRenderer(
         super.onBeforeClusterItemRendered(item, markerOptions)
     }
 
-    override fun onClusterItemRendered(item: MyItem, marker: Marker) {
+    override fun onClusterItemRendered(item: Toilet, marker: Marker) {
         marker.tag = item.getTag()
         super.onClusterItemRendered(item, marker)
     }

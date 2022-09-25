@@ -34,6 +34,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        QueryActivity().finish()
+
         val toolbar: Toolbar = findViewById(R.id.toolbar) // toolBar를 통해 App Bar 생성
         setSupportActionBar(toolbar) // 툴바 적용
 

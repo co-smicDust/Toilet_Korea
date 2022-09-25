@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.DataSnapshot
@@ -53,7 +54,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     // 현재위치를 가져올수 없는 경우 서울 시청의 위치로 지도를 보여주기 위해 서울시청의 위치를 변수로 선언
     // LatLng 클래스는 위도와 경도를 가지는 클래스
-    val CITY_HALL = LatLng(37.50203121152806, 127.03054633381461)
+    val CITY_HALL = LatLng(37.4272309, 126.99090478)
 
     // 구글 맵 객체를 참조할 멤버 변수
     var googleMap: GoogleMap? = null
@@ -155,7 +156,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
 
     // 맵 초기화하는 함수
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission", "PotentialBehaviorOverride")
     fun initMap() {
         // 맵뷰에서 구글 맵을 불러오는 함수. 컬백함수에서 구글 맵 객체가 전달됨
         mapView?.getMapAsync {
@@ -183,6 +184,41 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
             }
             searching()
+
+            googleMap?.setOnInfoWindowClickListener(GoogleMap.OnInfoWindowClickListener {
+
+                val arr = it.tag.toString().split("/") //마커에 붙인 태그
+                val args = Bundle()
+                args.putString("toiletNm", it.title.toString())
+                args.putString("rdnmadr", arr[0])
+                args.putString("lnmadr", it.snippet.toString())
+                args.putString("unisexToiletYn", arr[1])
+                args.putString("menToiletBowlNumber", arr[7])
+                args.putString("menUrineNumber", arr[8])
+                args.putString("menHandicapToiletBowlNumber", arr[9])
+                args.putString("menHandicapUrinalNumber", arr[10])
+                args.putString("menChildrenToiletBowlNumber", arr[11])
+                args.putString("menChildrenUrinalNumber", arr[12])
+                args.putString("ladiesToiletBowlNumber", arr[13])
+                args.putString("ladiesHandicapToiletBowlNumber", arr[14])
+                args.putString("ladiesChildrenToiletBowlNumber", arr[15])
+                args.putString("phoneNumber", arr[2])
+                args.putString("openTime", arr[3])
+                args.putString("position", it.position.toString())
+                args.putString("emgBellYn", arr[4])
+                args.putString("enterentCctvYn", arr[5])
+                args.putString("dipersExchgPosi", arr[6])
+
+                args.putParcelable("latlng", it.position)
+
+                bottomSheet.arguments = args
+                bottomSheet.show(parentFragmentManager, bottomSheet.tag)
+
+                googleMap?.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(it.position, DEFAULT_ZOOM_LEVEL))
+
+                return@OnInfoWindowClickListener
+            })
         }
     }
 
@@ -242,49 +278,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     if (dataSnapshot.exists()) {
                         // looping through to values
                         for (i in dataSnapshot.children) {
-                            toilet = i.getValue(Toilet::class.java)
+                            toilet = i.getValue(Toilet::class.java)!!
 
                             if (toilet?.latitude != null && toilet?.longitude != null){
-
                                 val item = MyItem(toilet!!)
                                 clusterManager?.addItem(item)
-
                             }
 
-                            googleMap?.setOnInfoWindowClickListener(GoogleMap.OnInfoWindowClickListener {
-
-                                val arr = it.tag.toString().split("/") //마커에 붙인 태그
-                                val args = Bundle()
-                                args.putString("toiletNm", it.title.toString())
-                                args.putString("rdnmadr", arr[0])
-                                args.putString("lnmadr", it.snippet.toString())
-                                args.putString("unisexToiletYn", arr[1])
-                                args.putString("menToiletBowlNumber", arr[7])
-                                args.putString("menUrineNumber", arr[8])
-                                args.putString("menHandicapToiletBowlNumber", arr[9])
-                                args.putString("menHandicapUrinalNumber", arr[10])
-                                args.putString("menChildrenToiletBowlNumber", arr[11])
-                                args.putString("menChildrenUrinalNumber", arr[12])
-                                args.putString("ladiesToiletBowlNumber", arr[13])
-                                args.putString("ladiesHandicapToiletBowlNumber", arr[14])
-                                args.putString("ladiesChildrenToiletBowlNumber", arr[15])
-                                args.putString("phoneNumber", arr[2])
-                                args.putString("openTime", arr[3])
-                                args.putString("position", it.position.toString())
-                                args.putString("emgBellYn", arr[4])
-                                args.putString("enterentCctvYn", arr[5])
-                                args.putString("dipersExchgPosi", arr[6])
-
-                                args.putParcelable("latlng", it.position)
-
-                                bottomSheet.arguments = args
-                                bottomSheet.show(parentFragmentManager, bottomSheet.tag)
-
-                                googleMap?.moveCamera(
-                                    CameraUpdateFactory.newLatLngZoom(it.position, DEFAULT_ZOOM_LEVEL))
-
-                                return@OnInfoWindowClickListener
-                            })
                         }
                         // 데이터 파싱 후 줌아웃을 함으로써 마커 표출 가능
                         // 그렇지 않으면 사용자가 직접 줌아웃을 한 이후에 마커 확인 가능
@@ -303,16 +303,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     @SuppressLint("PotentialBehaviorOverride")
     override fun onStart() {
         super.onStart()
-        if (toiletThread == null) {
-            toiletThread = ToiletThread()
-            toiletThread!!.start()
-        }
     }
 
     // 앱이 비활성화 될때 백그라운드 작업 취소
     override fun onStop() {
         super.onStop()
-        toiletThread!!.isInterrupted
+        toiletThread?.isInterrupted
         toiletThread = null
     }
 
@@ -377,6 +373,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 bottomSheet.show(parentFragmentManager, bottomSheet.tag)
             }
 
+        }else{
+            if (toiletThread == null) {
+                toiletThread = ToiletThread()
+                toiletThread!!.start()
+            }
         }
     }
 }

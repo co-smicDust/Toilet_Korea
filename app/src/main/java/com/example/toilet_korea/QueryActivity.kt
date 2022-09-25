@@ -35,6 +35,9 @@ class QueryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MainActivity().finish()
+
         binding = ActivityQueryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

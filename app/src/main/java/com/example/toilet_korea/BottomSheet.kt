@@ -2,19 +2,16 @@ package com.example.toilet_korea
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.ACTION_DIAL
 import android.content.Intent.ACTION_SENDTO
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,19 +36,14 @@ var lnmadr: String? = null
 var unisexToiletYn: String? = null
 var menToiletBowlNumber: String? = null
 var menUrineNumber: String? = null
-var menHandicapToiletBowlNumber: String? = null
-var menHandicapUrinalNumber: String? = null
-var menChildrenToiletBowlNumber: String? = null
-var menChildrenUrinalNumber: String? = null
 var ladiesToiletBowlNumber: String? = null
-var ladiesHandicapToiletBowlNumber: String? = null
-var ladiesChildrenToiletBowlNumber: String? = null
+var menHandicap: String? = null
+var menChildren: String? = null
+var ladiesHandicap: String? = null
+var ladiesChildren: String? = null
 var phoneNumber: String? = null
 var openTime: String? = null
 var position: String? = null
-var emgBellYn: String? = null
-var enterentCctvYn: String? = null
-var dipersExchgPosi: String? = null
 
 class BottomSheet : BottomSheetDialogFragment() {
 
@@ -103,25 +95,20 @@ class BottomSheet : BottomSheetDialogFragment() {
         unisexToiletYn = arguments?.getString("unisexToiletYn")
         menToiletBowlNumber = arguments?.getString("menToiletBowlNumber")
         menUrineNumber = arguments?.getString("menUrineNumber")
-        menHandicapToiletBowlNumber = arguments?.getString("menHandicapToiletBowlNumber")
-        menHandicapUrinalNumber = arguments?.getString("menHandicapUrinalNumber")
-        menChildrenToiletBowlNumber = arguments?.getString("menChildrenToiletBowlNumber")
-        menChildrenUrinalNumber = arguments?.getString("menChildrenUrinalNumber")
         ladiesToiletBowlNumber = arguments?.getString("ladiesToiletBowlNumber")
-        ladiesHandicapToiletBowlNumber = arguments?.getString("ladiesHandicapToiletBowlNumber")
-        ladiesChildrenToiletBowlNumber = arguments?.getString("ladiesChildrenToiletBowlNumber")
+        menHandicap = arguments?.getString("menHandicap")
+        menChildren = arguments?.getString("menChildren")
+        ladiesHandicap = arguments?.getString("ladiesHandicap")
+        ladiesChildren = arguments?.getString("ladiesChildren")
         phoneNumber = arguments?.getString("phoneNumber")
         openTime = arguments?.getString("openTime")
         position = arguments?.getString("position")
-        emgBellYn = arguments?.getString("emgBellYn")
-        enterentCctvYn = arguments?.getString("enterentCctvYn")
-        dipersExchgPosi = arguments?.getString("dipersExchgPosi")
 
         val contactViewModel: ContactViewModel =
             ViewModelProvider(this, ContactViewModel.Factory(requireActivity().application)).get(ContactViewModel::class.java)
-        contactViewModel.getAll().observe(this, Observer<List<Contact>> { contacts ->
+        contactViewModel.getAll().observe(this) { contacts ->
             adapter.setContacts(contacts!!)
-        })
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?):Dialog{
@@ -195,9 +182,6 @@ class BottomSheet : BottomSheetDialogFragment() {
                     for (i in snapshot.children) {
 
                         reviews = i.getValue(ReviewData::class.java)!!
-                        Log.d("와우", reviews.userNm.toString())
-                        Log.d("와우", reviews.content.toString())
-
                         newsList.add(reviews)
                     }
                 }
@@ -263,13 +247,12 @@ class BottomSheet : BottomSheetDialogFragment() {
         view?.findViewById<TextView>(R.id.unisexToiletYn)?.text = "남녀공용화장실여부: $unisexToiletYn"
         view?.findViewById<TextView>(R.id.menToiletBowlNumber)?.text = "남성용-대변기수: $menToiletBowlNumber"
         view?.findViewById<TextView>(R.id.menUrineNumber)?.text = "남성용-소변기수: $menUrineNumber"
-        view?.findViewById<TextView>(R.id.menHandicapToiletBowlNumber)?.text = "남성용-장애인용대변기수: $menHandicapToiletBowlNumber"
-        view?.findViewById<TextView>(R.id.menHandicapUrinalNumber)?.text = "남성용-장애인용소변기수: $menHandicapUrinalNumber"
-        view?.findViewById<TextView>(R.id.menChildrenToiletBowlNumber)?.text = "남성용-어린이용대변기수: $menChildrenToiletBowlNumber"
-        view?.findViewById<TextView>(R.id.menChildrenUrinalNumber)?.text = "남성용-어린이용소변기수: $menChildrenUrinalNumber"
         view?.findViewById<TextView>(R.id.ladiesToiletBowlNumber)?.text = "여성용-대변기수: $ladiesToiletBowlNumber"
-        view?.findViewById<TextView>(R.id.ladiesHandicapToiletBowlNumber)?.text = "여성용-장애인용대변기수: $ladiesHandicapToiletBowlNumber"
-        view?.findViewById<TextView>(R.id.ladiesChildrenToiletBowlNumber)?.text = "여성용-어린이용대변기수: $ladiesChildrenToiletBowlNumber"
+
+        view?.findViewById<TextView>(R.id.menHandicap)?.text = "남성용-장애인 화장실: $menHandicap"
+        view?.findViewById<TextView>(R.id.menChildren)?.text = "남성용-영유아 동반 화장실: $menChildren"
+        view?.findViewById<TextView>(R.id.ladiesHandicap)?.text = "여성용-장애인 화장실: $ladiesHandicap"
+        view?.findViewById<TextView>(R.id.ladiesChildren)?.text = "여성용-영유아 동반 화장실: $ladiesChildren"
     }
 
     private fun hideAppBar() {
@@ -296,9 +279,9 @@ class BottomSheet : BottomSheetDialogFragment() {
         builder.setTitle("짧게 누르면 문자, 길게 누르면 전화")
         val customLayout: View = layoutInflater.inflate(R.layout.alert_dialog, null)
         builder.setView(customLayout)
-        builder.setNegativeButton("닫기", DialogInterface.OnClickListener { dialog, i ->
+        builder.setNegativeButton("닫기") { dialog, _ ->
             dialog.dismiss()
-        })
+        }
         val alertDialog = builder.create()
         val recyclerView: RecyclerView =
             customLayout.findViewById(R.id.recyclerView)

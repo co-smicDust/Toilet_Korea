@@ -180,37 +180,49 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             searching()
 
-            googleMap?.setOnInfoWindowClickListener(GoogleMap.OnInfoWindowClickListener {
+            googleMap?.setOnInfoWindowClickListener(GoogleMap.OnInfoWindowClickListener { marker ->
 
-                val arr = it.tag.toString().split("/") //마커에 붙인 태그
+                val arr = marker.tag.toString().split("/") //마커에 붙인 태그
                 val args = Bundle()
-                args.putString("toiletNm", it.title.toString())
+                args.putString("toiletNm", marker.title.toString())
                 args.putString("rdnmadr", arr[0])
-                args.putString("lnmadr", it.snippet.toString())
+                args.putString("lnmadr", marker.snippet.toString())
                 args.putString("unisexToiletYn", arr[1])
                 args.putString("menToiletBowlNumber", arr[7])
                 args.putString("menUrineNumber", arr[8])
-                args.putString("menHandicapToiletBowlNumber", arr[9])
-                args.putString("menHandicapUrinalNumber", arr[10])
-                args.putString("menChildrenToiletBowlNumber", arr[11])
-                args.putString("menChildrenUrinalNumber", arr[12])
                 args.putString("ladiesToiletBowlNumber", arr[13])
-                args.putString("ladiesHandicapToiletBowlNumber", arr[14])
-                args.putString("ladiesChildrenToiletBowlNumber", arr[15])
+
+                if (arr[9] != "0" || arr[10] != "0")
+                    args.putString("menHandicap", "Y")
+                else
+                    args.putString("menHandicap", "N")
+
+                if (arr[11] != "0" || arr[12] != "0")
+                    args.putString("menChildren", "Y")
+                else
+                    args.putString("menChildren", "N")
+
+                if (arr[14] != "0")
+                    args.putString("ladiesHandicap", "Y")
+                else
+                    args.putString("ladiesHandicap", "N")
+
+                if (arr[15] != "0")
+                    args.putString("ladiesChildren", "Y")
+                else
+                    args.putString("ladiesChildren", "N")
+
                 args.putString("phoneNumber", arr[2])
                 args.putString("openTime", arr[3])
-                args.putString("position", it.position.toString())
-                args.putString("emgBellYn", arr[4])
-                args.putString("enterentCctvYn", arr[5])
-                args.putString("dipersExchgPosi", arr[6])
+                args.putString("position", marker.position.toString())
 
-                args.putParcelable("latlng", it.position)
+                args.putParcelable("latlng", marker.position)
 
                 bottomSheet.arguments = args
                 bottomSheet.show(parentFragmentManager, bottomSheet.tag)
 
                 googleMap?.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(it.position, DEFAULT_ZOOM_LEVEL))
+                    CameraUpdateFactory.newLatLngZoom(marker.position, DEFAULT_ZOOM_LEVEL))
 
                 return@OnInfoWindowClickListener
             })
@@ -291,19 +303,31 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 args.putString("unisexToiletYn", toilet.unisexToiletYn)
                 args.putString("menToiletBowlNumber", toilet.menToiletBowlNumber.toString())
                 args.putString("menUrineNumber", toilet.menUrineNumber.toString())
-                args.putString("menHandicapToiletBowlNumber", toilet.menHandicapToiletBowlNumber.toString())
-                args.putString("menHandicapUrinalNumber", toilet.menHandicapUrinalNumber.toString())
-                args.putString("menChildrenToiletBowlNumber", toilet.menChildrenToiletBowlNumber.toString())
-                args.putString("menChildrenUrinalNumber", toilet.menChildrenUrinalNumber.toString())
                 args.putString("ladiesToiletBowlNumber", toilet.ladiesToiletBowlNumber.toString())
-                args.putString("ladiesHandicapToiletBowlNumber", toilet.ladiesHandicapToiletBowlNumber.toString())
-                args.putString("ladiesChildrenToiletBowlNumber", toilet.ladiesChildrenToiletBowlNumber.toString())
+
+                if (toilet.menHandicapToiletBowlNumber != 0 || toilet.menHandicapUrinalNumber != 0)
+                    args.putString("menHandicap", "Y")
+                else
+                    args.putString("menHandicap", "N")
+
+                if (toilet.menChildrenToiletBowlNumber != 0 || toilet.menChildrenUrinalNumber != 0)
+                    args.putString("menChildren", "Y")
+                else
+                    args.putString("menChildren", "N")
+
+                if (toilet.ladiesHandicapToiletBowlNumber != 0)
+                    args.putString("ladiesHandicap", "Y")
+                else
+                    args.putString("ladiesHandicap", "N")
+
+                if (toilet.ladiesChildrenToiletBowlNumber != 0)
+                    args.putString("ladiesChildren", "Y")
+                else
+                    args.putString("ladiesChildren", "N")
+
                 args.putString("phoneNumber", toilet.phoneNumber)
                 args.putString("openTime", toilet.openTime)
                 args.putString("position", chosenPosition.toString())
-                args.putString("emgBellYn", toilet.emgBellYn)
-                args.putString("enterentCctvYn", toilet.enterentCctvYn)
-                args.putString("dipersExchgPosi", toilet.dipersExchgPosi)
 
                 bottomSheet.arguments = args
                 bottomSheet.show(parentFragmentManager, bottomSheet.tag)

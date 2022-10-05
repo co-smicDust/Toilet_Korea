@@ -15,22 +15,31 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer
 class MarkerClusterRenderer(
     context: Context?,
     map: GoogleMap,
-    clusterManager: ClusterManager<MyItem?>?
+    clusterManager: ClusterManager<Toilet?>?
 ) :
-    DefaultClusterRenderer<MyItem>(context, map, clusterManager) {
+    DefaultClusterRenderer<Toilet>(context, map, clusterManager) {
 
     val c = context
 
     override fun onBeforeClusterItemRendered(
-        item: MyItem,
+        item: Toilet,
         markerOptions: MarkerOptions
     ) {
+
+        // 화장실 이미지로 사용할 Bitmap
+        // Lazy 는 바로 생성하지 않고 처음 사용 될 때 생성하는 문법
+        /*val bitmap by lazy {
+            val drawable = getDrawable(c!!, R.drawable.restroom_sign) as BitmapDrawable
+            Bitmap.createScaledBitmap(drawable.bitmap, 64, 64, false)
+        }
+
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap))*/
         markerOptions.title(item.title)
         markerOptions.draggable(true)
         super.onBeforeClusterItemRendered(item, markerOptions)
     }
 
-    override fun onClusterItemRendered(item: MyItem, marker: Marker) {
+    override fun onClusterItemRendered(item: Toilet, marker: Marker) {
         marker.tag = item.getTag()
         super.onClusterItemRendered(item, marker)
     }

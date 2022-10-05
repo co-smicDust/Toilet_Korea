@@ -7,9 +7,6 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,27 +15,23 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.maps.android.clustering.ClusterManager
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
-    private var clusterManager: ClusterManager<MyItem?>? = null
+    private var clusterManager: ClusterManager<Toilet?>? = null
+
+    private var toilets: Collection<Toilet>? = null
 
     val database: DatabaseReference = Firebase.database.reference
 
     var rootView: View? = null
     var mapView: MapView? = null
-
-    var toilet: Toilet? = null
 
     // 런타임에서 권한이 필요한 퍼미션 목록
     val PERMISSIONS = arrayOf(
@@ -54,7 +47,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     // 현재위치를 가져올수 없는 경우 서울 시청의 위치로 지도를 보여주기 위해 서울시청의 위치를 변수로 선언
     // LatLng 클래스는 위도와 경도를 가지는 클래스
-    val CITY_HALL = LatLng(37.4272309, 126.99090478)
+    val CITY_HALL = LatLng(37.50203121152806, 127.03054633381461)
 
     // 구글 맵 객체를 참조할 멤버 변수
     var googleMap: GoogleMap? = null
@@ -115,12 +108,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             googleMap.setOnCameraIdleListener(clusterManager)
             googleMap.setOnMarkerClickListener(clusterManager)
 
-            val clusterRenderer: MarkerClusterRenderer =
-                MarkerClusterRenderer(context, googleMap, clusterManager)
+            val clusterRenderer = MarkerClusterRenderer(context, googleMap, clusterManager)
             clusterManager!!.renderer = clusterRenderer
 
             // 권한이 있는 경우 맵 초기화
             initMap()
+
+            addMarkers()
         } else {
             // 권한 요청
             requestPermissions(PERMISSIONS, REQUEST_PERMISSION_CODE)
@@ -183,39 +177,57 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     it.moveCamera(CameraUpdateFactory.newLatLngZoom(CITY_HALL, DEFAULT_ZOOM_LEVEL))
                 }
             }
+
             searching()
 
-            googleMap?.setOnInfoWindowClickListener(GoogleMap.OnInfoWindowClickListener {
+            googleMap?.setOnInfoWindowClickListener(GoogleMap.OnInfoWindowClickListener { marker ->
 
-                val arr = it.tag.toString().split("/") //마커에 붙인 태그
+                val arr = marker.tag.toString().split("/") //마커에 붙인 태그
                 val args = Bundle()
-                args.putString("toiletNm", it.title.toString())
+                args.putString("toiletNm", marker.title.toString())
                 args.putString("rdnmadr", arr[0])
-                args.putString("lnmadr", it.snippet.toString())
+                args.putString("lnmadr", marker.snippet.toString())
                 args.putString("unisexToiletYn", arr[1])
                 args.putString("menToiletBowlNumber", arr[7])
                 args.putString("menUrineNumber", arr[8])
-                args.putString("menHandicapToiletBowlNumber", arr[9])
-                args.putString("menHandicapUrinalNumber", arr[10])
-                args.putString("menChildrenToiletBowlNumber", arr[11])
-                args.putString("menChildrenUrinalNumber", arr[12])
                 args.putString("ladiesToiletBowlNumber", arr[13])
-                args.putString("ladiesHandicapToiletBowlNumber", arr[14])
-                args.putString("ladiesChildrenToiletBowlNumber", arr[15])
+
+                if (arr[1] == "Y")
+                    args.putString("unisexToiletYn", "남녀공용")
+                else
+                    args.putString("unisexToiletYn", "남녀분리")
+
+                if (arr[9] != "0" || arr[10] != "0")
+                    args.putString("menHandicap", "O")
+                else
+                    args.putString("menHandicap", "X")
+
+                if (arr[11] != "0" || arr[12] != "0")
+                    args.putString("menChildren", "O")
+                else
+                    args.putString("menChildren", "X")
+
+                if (arr[14] != "0")
+                    args.putString("ladiesHandicap", "O")
+                else
+                    args.putString("ladiesHandicap", "X")
+
+                if (arr[15] != "0")
+                    args.putString("ladiesChildren", "O")
+                else
+                    args.putString("ladiesChildren", "X")
+
                 args.putString("phoneNumber", arr[2])
                 args.putString("openTime", arr[3])
-                args.putString("position", it.position.toString())
-                args.putString("emgBellYn", arr[4])
-                args.putString("enterentCctvYn", arr[5])
-                args.putString("dipersExchgPosi", arr[6])
+                args.putString("position", marker.position.toString())
 
-                args.putParcelable("latlng", it.position)
+                args.putParcelable("latlng", marker.position)
 
                 bottomSheet.arguments = args
                 bottomSheet.show(parentFragmentManager, bottomSheet.tag)
 
                 googleMap?.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(it.position, DEFAULT_ZOOM_LEVEL))
+                    CameraUpdateFactory.newLatLngZoom(marker.position, DEFAULT_ZOOM_LEVEL))
 
                 return@OnInfoWindowClickListener
             })
@@ -240,76 +252,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    //DB의 toilet reference
-    val toiletRef = database.child("toilet")
+    fun addMarkers(){
 
-    inner class ToiletThread : Thread() {
-        override fun run() {
-            handler.sendEmptyMessage(0)
+        if (arguments == null || !requireArguments().containsKey("toilet")) {
+
+            toilets = DataHolder.instance.data
+
+            if (toilets != null){
+                clusterManager?.addItems(toilets)
+                googleMap?.animateCamera(CameraUpdateFactory.zoomOut())
+            }
         }
-    }
-
-    fun getDistance(latitude: Double, longitude: Double): Int {
-        val currentLatLng = getMyLocation()
-
-        val locationA = Location("A")
-        val locationB = Location("B")
-
-        locationA.latitude = currentLatLng.latitude
-        locationA.longitude = currentLatLng.longitude
-        locationB.latitude = latitude
-        locationB.longitude = longitude
-
-        //에뮬레이터에서 현재 위치를 구할 수 없어 임의로 기본값 선택.
-        // 현재 위치 구할 수 있는 환경이라면, 위치 권한 거부했을 때의 기본값(현재 CITY_HALL)으로 바꿀 것 요망
-        return if (currentLatLng != LatLng(0.0, 0.0))
-            locationA.distanceTo(locationB).toInt()
-        else 0
-    }
-
-    // 스레드가 다운로드 받아서 파싱한 결과를 가지고 맵 뷰에 마커를 출력해달라고 요청
-    val handler: Handler = object : Handler(Looper.getMainLooper()) {
-        override fun handleMessage(msg: Message) {
-
-            toiletRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                @SuppressLint("PotentialBehaviorOverride")
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                    if (dataSnapshot.exists()) {
-                        // looping through to values
-                        for (i in dataSnapshot.children) {
-                            toilet = i.getValue(Toilet::class.java)!!
-
-                            if (toilet?.latitude != null && toilet?.longitude != null){
-                                val item = MyItem(toilet!!)
-                                clusterManager?.addItem(item)
-                            }
-
-                        }
-                        // 데이터 파싱 후 줌아웃을 함으로써 마커 표출 가능
-                        // 그렇지 않으면 사용자가 직접 줌아웃을 한 이후에 마커 확인 가능
-                        googleMap?.animateCamera(CameraUpdateFactory.zoomOut())
-                    }
-
-                }
-                override fun onCancelled(databaseError: DatabaseError) {}
-            })
-        }
-    }
-
-    var toiletThread: ToiletThread? = null
-
-    // 앱이 활성화될때 화장실 데이터를 읽어옴
-    @SuppressLint("PotentialBehaviorOverride")
-    override fun onStart() {
-        super.onStart()
-    }
-
-    // 앱이 비활성화 될때 백그라운드 작업 취소
-    override fun onStop() {
-        super.onStop()
-        toiletThread?.isInterrupted
-        toiletThread = null
     }
 
     fun searching(){
@@ -355,29 +308,41 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 args.putString("unisexToiletYn", toilet.unisexToiletYn)
                 args.putString("menToiletBowlNumber", toilet.menToiletBowlNumber.toString())
                 args.putString("menUrineNumber", toilet.menUrineNumber.toString())
-                args.putString("menHandicapToiletBowlNumber", toilet.menHandicapToiletBowlNumber.toString())
-                args.putString("menHandicapUrinalNumber", toilet.menHandicapUrinalNumber.toString())
-                args.putString("menChildrenToiletBowlNumber", toilet.menChildrenToiletBowlNumber.toString())
-                args.putString("menChildrenUrinalNumber", toilet.menChildrenUrinalNumber.toString())
                 args.putString("ladiesToiletBowlNumber", toilet.ladiesToiletBowlNumber.toString())
-                args.putString("ladiesHandicapToiletBowlNumber", toilet.ladiesHandicapToiletBowlNumber.toString())
-                args.putString("ladiesChildrenToiletBowlNumber", toilet.ladiesChildrenToiletBowlNumber.toString())
+
+                if (toilet.unisexToiletYn == "Y")
+                    args.putString("unisexToiletYn", "남녀공용")
+                else
+                    args.putString("unisexToiletYn", "남녀분리")
+
+                if (toilet.menHandicapToiletBowlNumber != 0 || toilet.menHandicapUrinalNumber != 0)
+                    args.putString("menHandicap", "O")
+                else
+                    args.putString("menHandicap", "X")
+
+                if (toilet.menChildrenToiletBowlNumber != 0 || toilet.menChildrenUrinalNumber != 0)
+                    args.putString("menChildren", "O")
+                else
+                    args.putString("menChildren", "X")
+
+                if (toilet.ladiesHandicapToiletBowlNumber != 0)
+                    args.putString("ladiesHandicap", "O")
+                else
+                    args.putString("ladiesHandicap", "X")
+
+                if (toilet.ladiesChildrenToiletBowlNumber != 0)
+                    args.putString("ladiesChildren", "O")
+                else
+                    args.putString("ladiesChildren", "X")
+
                 args.putString("phoneNumber", toilet.phoneNumber)
                 args.putString("openTime", toilet.openTime)
                 args.putString("position", chosenPosition.toString())
-                args.putString("emgBellYn", toilet.emgBellYn)
-                args.putString("enterentCctvYn", toilet.enterentCctvYn)
-                args.putString("dipersExchgPosi", toilet.dipersExchgPosi)
 
                 bottomSheet.arguments = args
                 bottomSheet.show(parentFragmentManager, bottomSheet.tag)
             }
-
-        }else{
-            if (toiletThread == null) {
-                toiletThread = ToiletThread()
-                toiletThread!!.start()
-            }
         }
     }
+
 }

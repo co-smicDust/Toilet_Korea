@@ -1,7 +1,9 @@
 package com.example.toilet_korea
 
 import android.annotation.SuppressLint
+import android.media.SoundPool
 import android.os.*
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
@@ -14,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -37,6 +40,9 @@ class MainActivity : AppCompatActivity() {
     interface onBackPressedListener {
         fun onBackPressed()
     }
+
+    private val soundPool = SoundPool.Builder().build()
+    private var emgSoundId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,9 +77,25 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //비상연락 버튼클릭이벤트 - DangerCall (원래는 상단바에 플로팅 버튼, 후기창으로 옮김)
-        //myContactButton.setOnClickListener { onMyContactButtonClick() }
+        //비상벨
+        emgSoundId = soundPool.load(this, R.raw.alarm, 1)
+        var emgOnOff = 0
 
+        //버튼이 눌리면 사운드 ON
+        findViewById<FloatingActionButton>(R.id.sirenButton)?.setOnClickListener {
+
+            if(emgOnOff == 0) {
+                Log.i("emgsiren", "Clicked")
+                emgSoundId?.let { soundId ->
+                    soundPool.play(soundId, 2F, 2F, 0, 0 - 1, 1F)
+                }
+                emgOnOff = 1
+            } else{
+                soundPool.autoPause()
+                emgOnOff = 0
+            }
+
+        }
     }
 
     private fun setNavigationDrawer() {

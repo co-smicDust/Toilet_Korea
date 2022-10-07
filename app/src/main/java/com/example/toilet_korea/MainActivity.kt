@@ -41,9 +41,6 @@ class MainActivity : AppCompatActivity() {
         fun onBackPressed()
     }
 
-    private val soundPool = SoundPool.Builder().build()
-    private var emgSoundId: Int? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -75,26 +72,6 @@ class MainActivity : AppCompatActivity() {
 
                 mainFragment.arguments = send
             }
-        }
-
-        //비상벨
-        emgSoundId = soundPool.load(this, R.raw.alarm, 1)
-        var emgOnOff = 0
-
-        //버튼이 눌리면 사운드 ON
-        findViewById<FloatingActionButton>(R.id.sirenButton)?.setOnClickListener {
-
-            if(emgOnOff == 0) {
-                Log.i("emgsiren", "Clicked")
-                emgSoundId?.let { soundId ->
-                    soundPool.play(soundId, 2F, 2F, 0, 0 - 1, 1F)
-                }
-                emgOnOff = 1
-            } else{
-                soundPool.autoPause()
-                emgOnOff = 0
-            }
-
         }
     }
 

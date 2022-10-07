@@ -28,6 +28,19 @@
                 app:layout_constraintVertical_bias="0.501" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/sirenButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="56dp"
+                android:backgroundTint="@color/colorAccent"
+                android:clickable="true"
+                app:fabSize="mini"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_siren" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/myLocationButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

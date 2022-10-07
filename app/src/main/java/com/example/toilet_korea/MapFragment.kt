@@ -192,25 +192,30 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 args.putString("menUrineNumber", arr[8])
                 args.putString("ladiesToiletBowlNumber", arr[13])
 
-                if (arr[9] != "0" || arr[10] != "0")
-                    args.putString("menHandicap", "Y")
+                if (arr[1] == "Y")
+                    args.putString("unisexToiletYn", "남녀공용")
                 else
-                    args.putString("menHandicap", "N")
+                    args.putString("unisexToiletYn", "남녀분리")
+
+                if (arr[9] != "0" || arr[10] != "0")
+                    args.putString("menHandicap", "O")
+                else
+                    args.putString("menHandicap", "X")
 
                 if (arr[11] != "0" || arr[12] != "0")
-                    args.putString("menChildren", "Y")
+                    args.putString("menChildren", "O")
                 else
-                    args.putString("menChildren", "N")
+                    args.putString("menChildren", "X")
 
                 if (arr[14] != "0")
-                    args.putString("ladiesHandicap", "Y")
+                    args.putString("ladiesHandicap", "O")
                 else
-                    args.putString("ladiesHandicap", "N")
+                    args.putString("ladiesHandicap", "X")
 
                 if (arr[15] != "0")
-                    args.putString("ladiesChildren", "Y")
+                    args.putString("ladiesChildren", "O")
                 else
-                    args.putString("ladiesChildren", "N")
+                    args.putString("ladiesChildren", "X")
 
                 args.putString("phoneNumber", arr[2])
                 args.putString("openTime", arr[3])
@@ -305,25 +310,30 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 args.putString("menUrineNumber", toilet.menUrineNumber.toString())
                 args.putString("ladiesToiletBowlNumber", toilet.ladiesToiletBowlNumber.toString())
 
-                if (toilet.menHandicapToiletBowlNumber != 0 || toilet.menHandicapUrinalNumber != 0)
-                    args.putString("menHandicap", "Y")
+                if (toilet.unisexToiletYn == "Y")
+                    args.putString("unisexToiletYn", "남녀공용")
                 else
-                    args.putString("menHandicap", "N")
+                    args.putString("unisexToiletYn", "남녀분리")
+
+                if (toilet.menHandicapToiletBowlNumber != 0 || toilet.menHandicapUrinalNumber != 0)
+                    args.putString("menHandicap", "O")
+                else
+                    args.putString("menHandicap", "X")
 
                 if (toilet.menChildrenToiletBowlNumber != 0 || toilet.menChildrenUrinalNumber != 0)
-                    args.putString("menChildren", "Y")
+                    args.putString("menChildren", "O")
                 else
-                    args.putString("menChildren", "N")
+                    args.putString("menChildren", "X")
 
                 if (toilet.ladiesHandicapToiletBowlNumber != 0)
-                    args.putString("ladiesHandicap", "Y")
+                    args.putString("ladiesHandicap", "O")
                 else
-                    args.putString("ladiesHandicap", "N")
+                    args.putString("ladiesHandicap", "X")
 
                 if (toilet.ladiesChildrenToiletBowlNumber != 0)
-                    args.putString("ladiesChildren", "Y")
+                    args.putString("ladiesChildren", "O")
                 else
-                    args.putString("ladiesChildren", "N")
+                    args.putString("ladiesChildren", "X")
 
                 args.putString("phoneNumber", toilet.phoneNumber)
                 args.putString("openTime", toilet.openTime)

@@ -221,71 +221,126 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
 
-                                <TextView
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center_vertical"
-                                    android:text="상세정보"
-                                    android:textColor="@color/grey_90"
-                                    android:textSize="20dp"
-                                    android:paddingStart="@dimen/spacing_small"
-                                    android:paddingEnd="@dimen/spacing_small" />
+                                    android:orientation="horizontal">
 
-                                <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="15dp" />
+                                    <ImageButton
+                                        android:layout_width="@dimen/spacing_xlarge"
+                                        android:layout_height="@dimen/spacing_xlarge"
+                                        android:background="@android:color/transparent"
+                                        app:srcCompat="@drawable/ic_wc"
+                                        app:tint="@color/black" />
 
-                                <TextView
+                                    <View
+                                        android:layout_width="@dimen/spacing_small"
+                                        android:layout_height="0dp" />
+
+                                    <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center_vertical"
                                     android:id="@+id/unisexToiletYn" />
 
-                                <TextView
+                                </LinearLayout>
+
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center_vertical"
-                                    android:id="@+id/menToiletBowlNumber" />
+                                    android:orientation="horizontal">
 
-                                <TextView
+                                    <ImageButton
+                                        android:layout_width="@dimen/spacing_xlarge"
+                                        android:layout_height="@dimen/spacing_xlarge"
+                                        android:background="@android:color/transparent"
+                                        app:srcCompat="@drawable/ic_disabled"
+                                        app:tint="@color/purple_700" />
+                                    <View
+                                        android:layout_width="@dimen/spacing_small"
+                                        android:layout_height="0dp" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_vertical"
+                                        android:id="@+id/menHandicap" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center_vertical"
-                                    android:id="@+id/menUrineNumber" />
+                                    android:orientation="horizontal">
 
-                                <TextView
+                                    <ImageButton
+                                        android:layout_width="@dimen/spacing_xlarge"
+                                        android:layout_height="@dimen/spacing_xlarge"
+                                        android:background="@android:color/transparent"
+                                        app:srcCompat="@drawable/ic_child"
+                                        app:tint="@color/purple_700" />
+                                    <View
+                                        android:layout_width="@dimen/spacing_small"
+                                        android:layout_height="0dp" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_vertical"
+                                        android:id="@+id/menChildren" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center_vertical"
-                                    android:id="@+id/ladiesToiletBowlNumber" />
+                                    android:orientation="horizontal">
 
-                                <TextView
+                                    <ImageButton
+                                        android:layout_width="@dimen/spacing_xlarge"
+                                        android:layout_height="@dimen/spacing_xlarge"
+                                        android:background="@android:color/transparent"
+                                        app:srcCompat="@drawable/ic_disabled"
+                                        app:tint="@color/colorAccentDark" />
+                                    <View
+                                        android:layout_width="@dimen/spacing_small"
+                                        android:layout_height="0dp" />
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_vertical"
+                                        android:id="@+id/ladiesHandicap" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center_vertical"
-                                    android:id="@+id/menHandicap" />
+                                    android:orientation="horizontal">
 
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
-                                    android:id="@+id/menChildren" />
+                                    <ImageButton
+                                        android:layout_width="@dimen/spacing_xlarge"
+                                        android:layout_height="@dimen/spacing_xlarge"
+                                        android:background="@android:color/transparent"
+                                        app:srcCompat="@drawable/ic_child"
+                                        app:tint="@color/colorAccentDark" />
+                                    <View
+                                        android:layout_width="@dimen/spacing_small"
+                                        android:layout_height="0dp" />
 
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
-                                    android:id="@+id/ladiesHandicap" />
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_vertical"
+                                        android:id="@+id/ladiesChildren" />
 
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
-                                    android:id="@+id/ladiesChildren" />
-
-                                <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="15dp" />
+                                </LinearLayout>
 
                             </LinearLayout>
 
@@ -293,18 +348,48 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:layout_width="@dimen/spacing_xxlarge"
+                            android:layout_height="@dimen/spacing_xxlarge"
+                            android:background="@android:color/transparent"
+                            app:srcCompat="@drawable/comment"
+                            app:tint="@color/grey_20" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="댓글"
+                            android:textSize="20dp"/>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textInputLayout_contentText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
                     <EditText
                         android:id="@+id/contentText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:hint="화장실 후기를 작성해주세요!"
+                        android:textSize="15sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         android:inputType="text|textMultiLine"
                         android:scrollbars="vertical"
                         android:lines="6"
                         android:gravity="top|left"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <LinearLayout
                         android:id="@+id/rating_wrap_layout"
@@ -333,6 +418,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="리뷰 남기기"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp"
+                        android:backgroundTint="@color/colorAccent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />

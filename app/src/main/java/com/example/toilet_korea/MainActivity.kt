@@ -13,6 +13,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -197,7 +198,7 @@ class MainActivity : AppCompatActivity() {
 
                         DataHolder.instance.data = ArrayList<Toilet>(toilets)
 
-                        findViewById<ProgressBar>(R.id.pBar).visibility = View.GONE
+                        findViewById<LottieAnimationView>(R.id.pBar).visibility = View.GONE
 
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.frame, mainFragment)
@@ -220,7 +221,7 @@ class MainActivity : AppCompatActivity() {
         val toilets = DataHolder.instance.data
 
         if (toilets == null){
-            findViewById<ProgressBar>(R.id.pBar).visibility = View.VISIBLE
+            findViewById<LottieAnimationView>(R.id.pBar).visibility = View.VISIBLE
             if (toiletThread == null) {
                 toiletThread = ToiletThread()
                 toiletThread!!.start()

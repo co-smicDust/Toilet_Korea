@@ -63,7 +63,7 @@ class BottomSheet : BottomSheetDialogFragment() {
                 val myIntent = Intent(ACTION_SENDTO, myUri)
                 // 문자 전송 화면 이동 시 미리 문구를 적어서 보내기
                 // myIntent를 가지고 갈 때 -> putExtra로 데이터를 담아서 보내자
-                myIntent.putExtra("sms_body", "위급 상황입니다.")
+                myIntent.putExtra("sms_body", "[Toilette] 공중화장실에서 위급 상황이 발생했습니다. 주소:${rdnmadr}")
                 startActivity(myIntent)
             }
         }, { contact ->
@@ -244,15 +244,11 @@ class BottomSheet : BottomSheetDialogFragment() {
         view?.findViewById<TextView>(R.id.phone_number)?.text = phoneNumber
         view?.findViewById<TextView>(R.id.open_time)?.text = openTime
 
-        view?.findViewById<TextView>(R.id.unisexToiletYn)?.text = "남녀공용화장실여부: $unisexToiletYn"
-        view?.findViewById<TextView>(R.id.menToiletBowlNumber)?.text = "남성용-대변기수: $menToiletBowlNumber"
-        view?.findViewById<TextView>(R.id.menUrineNumber)?.text = "남성용-소변기수: $menUrineNumber"
-        view?.findViewById<TextView>(R.id.ladiesToiletBowlNumber)?.text = "여성용-대변기수: $ladiesToiletBowlNumber"
-
-        view?.findViewById<TextView>(R.id.menHandicap)?.text = "남성용-장애인 화장실: $menHandicap"
-        view?.findViewById<TextView>(R.id.menChildren)?.text = "남성용-영유아 동반 화장실: $menChildren"
-        view?.findViewById<TextView>(R.id.ladiesHandicap)?.text = "여성용-장애인 화장실: $ladiesHandicap"
-        view?.findViewById<TextView>(R.id.ladiesChildren)?.text = "여성용-영유아 동반 화장실: $ladiesChildren"
+        view?.findViewById<TextView>(R.id.unisexToiletYn)?.text = "$unisexToiletYn"
+        view?.findViewById<TextView>(R.id.menHandicap)?.text = "남성 장애인용 화장실: $menHandicap"
+        view?.findViewById<TextView>(R.id.menChildren)?.text = "남성 어린이용 화장실: $menChildren"
+        view?.findViewById<TextView>(R.id.ladiesHandicap)?.text = "여성 장애인용 화장실: $ladiesHandicap"
+        view?.findViewById<TextView>(R.id.ladiesChildren)?.text = "여성 어린이용 화장실: $ladiesChildren"
     }
 
     private fun hideAppBar() {

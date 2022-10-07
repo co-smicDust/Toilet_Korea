@@ -17,8 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Toilet_Korea"
         android:usesCleartextTraffic="true"
-        android:hardwareAccelerated="false"
-        android:largeHeap="true"
         tools:targetApi="m">
 
         <uses-library
@@ -27,7 +25,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAc0UolfKdvKM3xorfzIzd4yJG0QW72rcY" />
+            android:value="AIzaSyB6wqQQBkZ6n3R6bk4Guh5h8LUG2wz5b6Y" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -35,7 +33,9 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -50,7 +50,6 @@
         <activity
             android:name=".RealtimeDB"
             android:exported="true">
-
         </activity>
 
         <activity

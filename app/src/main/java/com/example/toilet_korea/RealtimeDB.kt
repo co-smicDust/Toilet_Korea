@@ -2,7 +2,6 @@ package com.example.toilet_korea
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 import com.google.firebase.database.R
@@ -25,18 +24,16 @@ class RealtimeDB : AppCompatActivity() {
 
         thread {
             val API_KEY =
-                "g5i7qJn8Mi5NKv%2FXkSxItQQmoXGzQfgjtj0UdKXYURG4OfE%2BOS%2BxD17cMRFYH22ISNcxiTJw68PboMhNllrnWA%3D%3D"
+                "dbfTaH38sAn%2BuSkkba91GDEz5yXxlSyQmXg3si7fYYhixama3C8TPxXHwhq%2BPtntBSA8NXikhNlIE4qcLjx42w%3D%3D"
 
             //데이터의 시작과 종료 인덱스
             var pageNo = 1
             //과천만
             val numOfRows = 100
             //데이터의 전체 개수를 저장하기 위한 프로퍼티
-            val count = 350
-
+            var count = 350
 
             database.child("toilet").removeValue()
-
             do {
                 //파싱할 URL 생성
                 val url =
@@ -105,7 +102,6 @@ class RealtimeDB : AppCompatActivity() {
                         obj.getString("dipersExchgPosi"))
 
                     database.child("toilet").child(toiletNm).setValue(toilet)
-                    Log.i(toiletNm,toiletNm)
 
                 }
                 //인덱스를 변경해서 데이터 계속 가져오기

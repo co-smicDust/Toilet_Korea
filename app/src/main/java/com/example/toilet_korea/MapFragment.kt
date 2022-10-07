@@ -4,8 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -48,7 +46,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     val DEFAULT_ZOOM_LEVEL = 17f
 
     // 현재위치를 가져올수 없는 경우 서울 시청의 위치로 지도를 보여주기 위해 서울시청의 위치를 변수로 선언
-    // 일단 과천청사역 1번출구로 바꿔둠
     // LatLng 클래스는 위도와 경도를 가지는 클래스
     val CITY_HALL = LatLng(37.50203121152806, 127.03054633381461)
 

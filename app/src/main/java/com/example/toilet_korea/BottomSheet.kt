@@ -209,23 +209,28 @@ class BottomSheet : BottomSheetDialogFragment() {
 
         //리뷰 쓰기
         view?.findViewById<Button>(R.id.confirmButton)?.setOnClickListener {
-            val contentText = view?.findViewById<EditText>(R.id.contentText)?.text
-            val rate: Double = view?.findViewById<RatingBar>(R.id.ratingBar)?.rating!!.toDouble()
 
-            if (contentText.toString() != "" && rate > 0){
-                //toiletNum-review에 리뷰 저장
+            if (curUID != "null"){
+                val contentText = view?.findViewById<EditText>(R.id.contentText)?.text
+                val rate: Double = view?.findViewById<RatingBar>(R.id.ratingBar)?.rating!!.toDouble()
 
-                reviewRef.child(curUID).child("rate").setValue(rate)
-                reviewRef.child(curUID).child("content").setValue(contentText.toString())
-                reviewRef.child(curUID).child("userNm").setValue(nickname)
-                reviewRef.child(curUID).child("image").setValue(R.drawable.ic_personal)
+                if (contentText.toString() != "" && rate > 0){
 
-                Toast.makeText(context, "리뷰가 저장되었습니다.", Toast.LENGTH_SHORT).show()
-                contentText?.clear()
-                view?.findViewById<RatingBar>(R.id.ratingBar)?.rating = 0.0F
+                    reviewRef.child(curUID).child("rate").setValue(rate)
+                    reviewRef.child(curUID).child("content").setValue(contentText.toString())
+                    reviewRef.child(curUID).child("userNm").setValue(nickname)
+                    reviewRef.child(curUID).child("image").setValue(R.drawable.ic_personal)
+
+                    Toast.makeText(context, "리뷰가 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                    contentText?.clear()
+                    view?.findViewById<RatingBar>(R.id.ratingBar)?.rating = 0.0F
+                } else {
+                    Toast.makeText(context, "별점이나 리뷰를 작성해주세요.", Toast.LENGTH_SHORT).show()
+                }
             } else {
-                Toast.makeText(context, "별점이나 리뷰를 작성해주세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "게스트 이용자에게는 제한된 접근입니다.", Toast.LENGTH_LONG).show()
             }
+
         }
     }
 

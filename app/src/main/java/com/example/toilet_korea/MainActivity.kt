@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity() {
 
     val database: DatabaseReference = Firebase.database.reference
 
+    private val currentUser = Firebase.auth.currentUser
+    var curUID = currentUser?.uid.toString()
+
     var toilets = ArrayList<Toilet>()
     var toilet: Toilet? = null
 
@@ -86,7 +89,11 @@ class MainActivity : AppCompatActivity() {
             // check selected menu item's id and replace a Fragment Accordingly
             when (itemId) {
                 R.id.first -> {
-                    frag = FirstFragment()
+                    if (curUID != "null"){
+                        frag = FirstFragment()
+                    } else {
+                        Toast.makeText(applicationContext, "게스트 이용자에게는 제한된 접근입니다.", Toast.LENGTH_LONG).show()
+                    }
                 }
                 R.id.second -> {
                     frag = SecondFragment()
@@ -98,8 +105,11 @@ class MainActivity : AppCompatActivity() {
                     frag = MapFragment()
                 }
             }
-            // display a toast message with menu item's title
-            Toast.makeText(applicationContext, menuItem.title, Toast.LENGTH_SHORT).show()
+            if (curUID != "null" || itemId != R.id.first){
+                // display a toast message with menu item's title
+                Toast.makeText(applicationContext, menuItem.title, Toast.LENGTH_SHORT).show()
+            }
+
             if (frag != null) {
                 val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.frame, frag) // replace a Fragment with Frame Layout

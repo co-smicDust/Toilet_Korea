@@ -1,7 +1,9 @@
 package com.example.toilet_korea
 
 import android.annotation.SuppressLint
+import android.media.SoundPool
 import android.os.*
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
@@ -14,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -70,10 +73,6 @@ class MainActivity : AppCompatActivity() {
                 mainFragment.arguments = send
             }
         }
-
-        //비상연락 버튼클릭이벤트 - DangerCall (원래는 상단바에 플로팅 버튼, 후기창으로 옮김)
-        //myContactButton.setOnClickListener { onMyContactButtonClick() }
-
     }
 
     private fun setNavigationDrawer() {

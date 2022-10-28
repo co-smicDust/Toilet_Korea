@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.media.SoundPool
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +31,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var toilets: Collection<Toilet>? = null
 
     val database: DatabaseReference = Firebase.database.reference
+
+    private val soundPool = SoundPool.Builder().build()
+    private var emgSoundId: Int? = null
 
     var rootView: View? = null
     var mapView: MapView? = null
@@ -78,6 +83,26 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 else -> Toast.makeText(requireContext().applicationContext, "위치사용권한 설정에 동의해주세요", Toast.LENGTH_LONG)
                     .show()
             }
+        }
+
+        //비상벨
+        emgSoundId = soundPool.load(requireContext(), R.raw.alarm, 1)
+        var emgOnOff = 0
+
+        //버튼이 눌리면 사운드 ON
+        view.findViewById<FloatingActionButton>(R.id.sirenButton)?.setOnClickListener {
+
+            if(emgOnOff == 0) {
+                Log.i("emgsiren", "Clicked")
+                emgSoundId?.let { soundId ->
+                    soundPool.play(soundId, 2F, 2F, 0, 0 - 1, 1F)
+                }
+                emgOnOff = 1
+            } else{
+                soundPool.autoPause()
+                emgOnOff = 0
+            }
+
         }
     }
 

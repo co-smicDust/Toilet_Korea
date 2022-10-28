@@ -28,12 +28,12 @@ class MarkerClusterRenderer(
 
         // 화장실 이미지로 사용할 Bitmap
         // Lazy 는 바로 생성하지 않고 처음 사용 될 때 생성하는 문법
-        val bitmap by lazy {
+        /*val bitmap by lazy {
             val drawable = getDrawable(c!!, R.drawable.restroom_sign) as BitmapDrawable
             Bitmap.createScaledBitmap(drawable.bitmap, 64, 64, false)
         }
 
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap))
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap))*/
         markerOptions.title(item.title)
         markerOptions.draggable(true)
         super.onBeforeClusterItemRendered(item, markerOptions)

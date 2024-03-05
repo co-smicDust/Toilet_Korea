@@ -56,7 +56,9 @@ Toilette은 대학교 졸업프로젝트로 개발한, 전국 화장실 정보�
 ### 3. 실행 화면
 <details><summary>로그인</summary>
   <p>
+    
   ![beforeLogin](https://github.com/co-smicDust/Toilet_Korea/blob/main/login.jpg)
+  
   </p>
 </details>
 

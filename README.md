@@ -31,7 +31,7 @@ Toilette은 대학교 졸업프로젝트로 개발한, 전국 화장실 정보�
   | 팀원 | 역할 |
   | ----- | -------|
   | 권소현 | Front, Review, Emergency System |
-  | 이지영 | Front, Map, Crawling, Search |
+  | 이지영 | Front, Map, Clustering, Search |
   | 황보소영 | Firebase 실시간 데이터 베이스 생성 및 연동<br>소셜 로그인과 사용자 인증 토큰 관리<br>개인정보수정 기능<br>비상 사이렌 기능 |
 
 
